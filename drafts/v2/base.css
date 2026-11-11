@@ -1,0 +1,96 @@
+/* Shawnys Captures, site draft v0.3 (2026-11-11). Tokens and the few shared pieces.
+   Spacing, page padding, radii and pills are the design portfolio's (design-portfolio/src/styles/tokens.css).
+   The type is a step smaller than that site's, set in Wittgenstein; the ground is a bright neutral white. */
+:root {
+  --paper: #FDFDFC;        /* ground */
+  --paper-deep: #F4F4F2;   /* boxes */
+  --line: #E5E5E1;         /* 1 px rules */
+  --ink: #1B1A18;          /* text, 16.6:1 on paper */
+  --ink-quiet: #5F5D58;    /* secondary text, 6.5:1 on paper, 6:1 on a box */
+  --dark: #121211;         /* viewer */
+  --on-dark: #FDFDFC;
+  --on-dark-quiet: #B4B2AC;
+  /* Orange, used sparingly */
+  --ember: #F26B2E;        /* the mark: progress, selection, focus on dark */
+  --terracotta: #B0452A;   /* links and the primary button on paper (5.5:1) */
+  --terracotta-deep: #963A23;
+
+  --font-display: 'Wittgenstein', Georgia, serif;
+  --font-body: 'Ringside', 'Libre Franklin', Arial, sans-serif;
+
+  --fs-mega: clamp(2rem, 1.5rem + 2.2vw, 3.25rem);       /* 32 → 52 */
+  --fs-h2: clamp(1.375rem, 1.2rem + 0.8vw, 1.875rem);    /* 22 → 30 */
+  --fs-lede: clamp(1.125rem, 1.05rem + 0.4vw, 1.375rem); /* 18 → 22 */
+  --fs-h3: 1.25rem;                                      /* 20 */
+  --fs-body: 1rem;                                       /* 16 */
+  --fs-small: 0.875rem;                                  /* 14 */
+  --fs-pill: 0.8125rem;                                  /* 13 */
+  --fs-caption: 0.75rem;                                 /* 12 */
+  --lh-mega: 1.06; --lh-title: 1.15; --lh-lede: 1.35; --lh-body: 1.55;
+  --track-mega: -0.022em; --track-title: -0.012em;
+
+  /* Spacing (4 px base) and layout, as the design portfolio */
+  --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px;
+  --space-6: 32px; --space-7: 48px; --space-8: 64px; --space-9: 80px; --space-10: 120px; --space-11: 160px;
+  --section-gap: var(--space-9);
+  --max: 1320px; --measure: 62ch; --page-pad: 20px; --tap: 44px; --nav-h: 72px;
+  --radius-chip: 8px; --radius-card: 12px; --radius-panel: 16px; --radius-pill: 999px;
+  --ease: cubic-bezier(0.65, 0, 0, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+}
+@media (min-width: 768px)  { :root { --page-pad: 32px; --section-gap: var(--space-10); } }
+@media (min-width: 1024px) { :root { --page-pad: 48px; --section-gap: var(--space-11); } }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { background: var(--paper); -webkit-text-size-adjust: 100%; scrollbar-color: #C9C8C3 var(--paper); }
+body { margin: 0; color: var(--ink); background: var(--paper); caret-color: var(--terracotta);
+  font: 400 var(--fs-body)/var(--lh-body) var(--font-body); -webkit-font-smoothing: antialiased; }
+h1, h2, h3, h4, p, figure, ul, ol, dl, dd { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 400; text-wrap: balance; }
+h1 { font-size: var(--fs-mega); line-height: var(--lh-mega); letter-spacing: var(--track-mega); }
+h2 { font-size: var(--fs-h2); line-height: var(--lh-title); letter-spacing: var(--track-title); }
+h3 { font-size: var(--fs-h3); line-height: var(--lh-title); letter-spacing: var(--track-title); }
+:focus-visible { outline: 2px solid var(--terracotta); outline-offset: 3px; border-radius: 4px; }
+::selection { background: var(--ember); color: var(--dark); }
+
+.container { width: min(100% - 2 * var(--page-pad), var(--max)); margin-inline: auto; }
+.quiet { color: var(--ink-quiet); }
+.small { font-size: var(--fs-small); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.ic { width: 1em; height: 1em; flex: none; }
+.link { color: var(--terracotta); font-weight: 500; }
+.link:hover { color: var(--terracotta-deep); }
+
+/* Pills: 36 px tall with a 44 px tap target, as the design portfolio's nav */
+.pill { position: relative; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 14px;
+  border-radius: var(--radius-pill); border: 1px solid color-mix(in srgb, var(--ink) 20%, var(--paper));
+  background: var(--paper); color: var(--ink); text-decoration: none; white-space: nowrap;
+  font: 500 var(--fs-pill)/1 var(--font-body);
+  transition: background-color 250ms var(--ease), border-color 250ms var(--ease), color 250ms var(--ease), transform 150ms var(--ease-out); }
+.pill::before { content: ''; position: absolute; inset: -4px -2px; }
+.pill:hover { background: var(--paper-deep); }
+.pill:active { transform: scale(.97); }
+.pill[aria-current='page'], .pill[aria-pressed='true'] { background: var(--ink); border-color: var(--ink); color: var(--paper); }
+.pill.primary { background: var(--terracotta); border-color: var(--terracotta); color: var(--paper); }
+.pill.primary:hover { background: var(--terracotta-deep); border-color: var(--terracotta-deep); }
+.pill.large { min-height: 46px; padding: 0 20px; font-size: var(--fs-small); }
+.pill .ic { transition: transform 300ms var(--ease-out); }
+.pill:hover .ic { transform: translateX(3px); }
+
+/* A box, as the design portfolio's tiles: a rounded ground that holds a photograph or a print. */
+.box { position: relative; overflow: hidden; border-radius: var(--radius-card); background: var(--paper-deep); }
+/* The prints: grainy long exposures of landscapes, for boxes with no photograph in them (scripts/make-textures.py). */
+.print { background: #2B4A22 center / cover no-repeat; }
+.print.dusk { background-image: url(../../public/textures/print-dusk.webp); background-color: #8A4A2C; }
+.print.foliage { background-image: url(../../public/textures/print-foliage.webp); }
+.print.water { background-image: url(../../public/textures/print-water.webp); background-color: #8CC6D2; }
+.print.meadow { background-image: url(../../public/textures/print-meadow.webp); }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important; scroll-behavior: auto !important; }
+}

@@ -1,0 +1,573 @@
+<!doctype html>
+<html lang="en-SG">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Shawnys Captures: wedding photography in Singapore</title>
+<meta name="description" content="Shawn Sim photographs weddings, pre-weddings, families and events in Singapore. Waiting for good light.">
+<link rel="preconnect" href="https://cdn.myportfolio.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Averia+Serif+Libre:ital,wght@0,400;1,400&family=Libre+Franklin:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="base.css">
+<style>
+/* Concept C, The Window.
+   The page is paper. Each photograph is light coming through an opening cut in it.
+   A plate is a tall section with a pinned stage: paper below, the photograph in a clipped window above it.
+   Scroll position alone drives how far the window is open (script sets the clip, the mat and a few numbers). */
+
+:root { --bar: 0px; --stage-h: 100vh; }
+@supports (height: 100lvh) {
+  /* The stage is as tall as the largest viewport so nothing jumps when a phone's toolbar hides;
+     --bar keeps bottom-anchored things clear of the toolbar while it shows. */
+  :root { --stage-h: 100lvh; --bar: calc(100lvh - 100svh); }
+}
+html { scroll-padding-top: var(--nav-h); }
+body { overflow-x: clip; }
+body.menu-open { overflow: hidden; }
+.grain::after { border-radius: inherit; }
+
+/* ---------- Nav: one paper bar, so it reads the same over paper and over a photograph ---------- */
+.nav { position: fixed; inset: 0 0 auto 0; z-index: 30; display: flex; align-items: flex-start;
+  justify-content: space-between; gap: var(--space-4);
+  padding: var(--space-4) var(--page-pad) 0; pointer-events: none; }
+.nav > * { pointer-events: auto; }
+/* A soft Darkroom corner behind the logo, only while the logo sits on a photograph */
+.nav::before { content: ''; position: absolute; top: 0; left: 0; width: 320px; height: 240px; pointer-events: none;
+  background: radial-gradient(ellipse 72% 72% at 22% 24%, rgb(23 19 16 / .5), rgb(23 19 16 / 0) 100%);
+  opacity: 0; transition: opacity 350ms var(--ease); }
+.nav[data-over='photo']::before { opacity: 1; }
+.logo { position: relative; display: block; width: 120px; flex: none; border-radius: 4px; }
+.logo img { width: 120px; height: auto; transition: opacity 350ms var(--ease); }
+.logo .on-photo { position: absolute; inset: 0 auto auto 0; opacity: 0; }
+.nav[data-over='photo'] .logo .on-photo { opacity: 1; }
+.nav[data-over='photo'] .logo .on-paper { opacity: 0; }
+.nav[data-over='photo'] .logo:focus-visible { outline-color: var(--paper); }
+
+.bar { position: relative; isolation: isolate; display: flex; align-items: center; gap: var(--space-1);
+  padding: 3px; border-radius: var(--radius-pill); background: var(--paper);
+  border: 1px solid color-mix(in srgb, var(--ink) 16%, var(--paper)); }
+.bar ul { display: none; align-items: center; }
+.bar li + li.gap { margin-left: var(--space-2); padding-left: var(--space-2);
+  border-left: 1px solid var(--line); }
+.bar-link { position: relative; display: inline-flex; align-items: center; min-height: 36px; padding: 0 12px;
+  border-radius: var(--radius-pill); text-decoration: none; color: var(--ink);
+  font: 500 var(--fs-pill)/1 var(--font-body); transition: background-color 250ms var(--ease); }
+.bar-link::before { content: ''; position: absolute; inset: -4px 0; }
+.bar-link:hover { background: var(--paper-deep); }
+.bar .pill { border-color: transparent; background: transparent; }
+.bar .pill:hover { background: var(--paper-deep); }
+.bar .pill.primary { background: var(--terracotta); border-color: var(--terracotta); }
+.bar .pill.primary:hover { background: var(--terracotta-deep); border-color: var(--terracotta-deep); }
+@media (min-width: 900px) {
+  .bar ul { display: flex; }
+  .menu-btn { display: none; }
+}
+
+/* Phone menu: a sheet of the same paper */
+.menu { position: fixed; inset: 0; z-index: 25; isolation: isolate; overflow: auto; background: var(--paper);
+  display: flex; flex-direction: column; justify-content: flex-end; gap: var(--space-6);
+  padding: calc(var(--nav-h) + var(--space-9)) var(--page-pad) var(--space-7);
+  animation: sheet-in 350ms var(--ease-out); }
+.menu[hidden] { display: none; }
+.menu .leak { top: 0; right: 0; width: 100%; height: 46%; background-image: url(../../../public/textures/leak-3-wash.webp);
+  opacity: .32; z-index: -1; }
+.menu ul { display: grid; gap: var(--space-1); }
+.menu li + li.gap { margin-top: var(--space-4); padding-top: var(--space-4); border-top: 1px solid var(--line); }
+.menu-link { display: flex; align-items: center; min-height: var(--tap); text-decoration: none;
+  font: 400 var(--fs-h2)/var(--lh-title) var(--font-display); letter-spacing: var(--track-title); }
+.menu-link:hover { color: var(--terracotta); }
+.menu .pill { align-self: flex-start; }
+@keyframes sheet-in { from { opacity: 0; transform: translateY(-12px); } to { opacity: 1; transform: none; } }
+
+/* ---------- Plates ---------- */
+.plate { position: relative; height: calc(var(--stage-h) * 2.3);
+  /* where the print sits on the paper when the window is closed */
+  --it: calc(var(--nav-h) + var(--space-6)); --il: var(--page-pad); --ir: var(--page-pad);
+  --ib: calc(208px + var(--bar)); }
+.plate.first { height: calc(var(--stage-h) * 1.6); }
+
+.stage { position: sticky; top: 0; height: var(--stage-h); overflow: hidden; isolation: isolate;
+  background: var(--paper); --c: 1; --cap: 1; --tab: 0; --a: 1; }
+.plate.first .stage { --c: 0; --cap: 0; --tab: 1; }
+
+.slot { position: absolute; top: var(--it); right: var(--ir); bottom: var(--ib); left: var(--il);
+  visibility: hidden; pointer-events: none; }
+
+/* Light spilling out of the window onto the paper beside it */
+.wash { left: 0; right: 0; top: calc(100% - var(--ib) - var(--space-5)); bottom: 0;
+  background-image: url(../../../public/textures/leak-3-wash.webp);
+  opacity: calc(.1 + .2 * var(--a)); animation: breathe 17s ease-in-out infinite alternate; }
+@keyframes breathe { from { transform: translate3d(-1.5%, 0, 0) scale(1); } to { transform: translate3d(2%, 1%, 0) scale(1.08); } }
+
+/* The link is the whole stage; the photograph sits inside it, clipped to the opening */
+.plate-link { position: absolute; inset: 0; display: block; outline: none; -webkit-tap-highlight-color: transparent; }
+.plate-link:focus-visible::after { content: ''; position: absolute; inset: var(--space-2); z-index: 2;
+  border: 2px solid var(--paper); outline: 2px solid var(--ink); border-radius: 6px; pointer-events: none; }
+.window { position: absolute; inset: 0; background: var(--paper-deep); }
+.window img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 40%;
+  transform-origin: 50% 50%; will-change: transform; }
+
+/* The cut edge of the mat: a hairline and the shadow the paper drops into the opening.
+   Both go to nothing as the window opens, so the full-screen photograph carries no marks at all.
+   No opacity or transform here: the flare inside has to blend with the photograph underneath. */
+.mat { position: absolute; inset: 0; overflow: hidden; pointer-events: none; border-radius: calc(var(--c) * 2px);
+  box-shadow: inset 0 0 0 1px rgb(33 28 23 / calc(var(--c) * .16)),
+              inset 0 3px 6px -3px rgb(23 19 16 / calc(var(--c) * .45)),
+              0 0 0 1px rgb(255 255 255 / calc(var(--c) * .55)); }
+/* A leak that grazes the leading edge only while the window is moving */
+.flare { top: auto; right: 0; bottom: 0; left: 0; height: 22%; opacity: 0;
+  background: url(../../../public/textures/leak-3.webp) top center / 100% 300% no-repeat;
+  transform: scaleY(-1); mix-blend-mode: screen;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, transparent 100%);
+          mask-image: linear-gradient(to bottom, #000 0%, transparent 100%); }
+
+/* The name, hand-set on the paper beside the print */
+.plate-caption { position: absolute; left: var(--page-pad); right: var(--page-pad);
+  top: calc(100% - var(--ib) + var(--space-4)); pointer-events: none;
+  display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2);
+  opacity: var(--cap); transform: translate3d(0, calc((1 - var(--cap)) * 16px), 0); }
+.plate-caption .num { font: italic 400 var(--fs-lg)/1 var(--font-display); color: var(--terracotta); }
+.plate-caption h2 { overflow-wrap: anywhere; }
+.plate-caption .caption { color: var(--ink); }
+.cue { display: inline-flex; align-items: baseline; gap: 6px; font: 500 var(--fs-pill)/1.3 var(--font-body);
+  color: var(--terracotta); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.cue i { font-style: normal; display: inline-block; transition: transform 350ms var(--ease-out); }
+.plate-link:hover ~ .plate-caption .cue i, .plate-link:hover ~ .slips .cue i,
+.plate-link:focus-visible ~ .plate-caption .cue i, .plate-link:focus-visible ~ .slips .cue i { transform: translateX(4px); }
+
+/* Slips of the same paper left lying on the open photograph: the name tag, and on the first plate the headline */
+.slips { position: absolute; left: var(--page-pad); right: var(--page-pad); bottom: calc(var(--space-5) + var(--bar));
+  display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-2); pointer-events: none;
+  opacity: var(--tab); transform: translate3d(0, calc((1 - var(--tab)) * 12px), 0); }
+.slip { position: relative; isolation: isolate; max-width: min(100%, 26rem); padding: var(--space-3) var(--space-4);
+  background: var(--paper); border-radius: 2px; box-shadow: 0 1px 2px rgb(23 19 16 / .28); }
+.slip h1 { font-size: var(--fs-h3); line-height: var(--lh-title); letter-spacing: var(--track-title); }
+.slip .title { font: 400 var(--fs-h4)/var(--lh-title) var(--font-display); letter-spacing: var(--track-title); }
+.slip .caption { margin-top: var(--space-1); }
+.slip .cue { margin-top: var(--space-2); }
+
+/* Side by side: the print on one side, the name on the other, alternating down the page */
+@media (min-width: 900px), (min-width: 600px) and (orientation: landscape) {
+  .plate { --it: calc(var(--nav-h) + var(--space-7)); --ib: calc(var(--space-9) + var(--bar)); --ir: 44%; }
+  .plate.flip { --il: 44%; --ir: var(--page-pad); }
+  .plate-caption { top: var(--it); bottom: var(--ib); left: calc(56% + var(--space-7)); right: var(--page-pad);
+    justify-content: flex-end; gap: var(--space-3); }
+  .plate.flip .plate-caption { left: var(--page-pad); right: calc(56% + var(--space-7)); }
+  .wash { top: 6%; bottom: 6%; left: 49%; right: auto; width: 48%;
+    background-image: url(../../../public/textures/leak-1-wash.webp); opacity: calc(.14 + .26 * var(--a)); }
+  .plate.flip .wash { left: auto; right: 49%; background-image: url(../../../public/textures/leak-2-wash.webp); }
+  .flare { top: 0; bottom: 0; left: auto; right: 0; width: 22%; height: auto; transform: none;
+    background: url(../../../public/textures/leak-2.webp) right center / 400% 100% no-repeat;
+    -webkit-mask-image: linear-gradient(to left, #000 0%, transparent 100%);
+            mask-image: linear-gradient(to left, #000 0%, transparent 100%); }
+  .plate.flip .flare { left: 0; right: auto;
+    background: url(../../../public/textures/leak-1.webp) left center / 400% 100% no-repeat;
+    -webkit-mask-image: linear-gradient(to right, #000 0%, transparent 100%);
+            mask-image: linear-gradient(to right, #000 0%, transparent 100%); }
+  .slips { flex-direction: row-reverse; justify-content: space-between; align-items: flex-end; gap: var(--space-5);
+    bottom: calc(var(--space-6) + var(--bar)); }
+}
+@media (min-width: 1200px) {
+  .plate-caption h2 { font-size: var(--fs-mega); line-height: var(--lh-mega); letter-spacing: var(--track-mega); }
+}
+@media (max-height: 520px) and (orientation: landscape) {
+  .plate { --it: calc(var(--nav-h) + var(--space-5)); --ib: calc(var(--space-5) + var(--bar)); }
+}
+
+/* ---------- After the plates: all paper ---------- */
+.after { position: relative; isolation: isolate; overflow: hidden; background: var(--paper); }
+.after section { position: relative; padding-block: var(--section-gap) 0; }
+.after .leak { z-index: -1; }
+.leak-intro { top: 0; right: 0; width: min(70vw, 900px); aspect-ratio: 16 / 10;
+  background-image: url(../../../public/textures/leak-2-wash.webp); opacity: .3; }
+.leak-enquire { bottom: 0; left: 0; width: min(80vw, 1000px); aspect-ratio: 16 / 10;
+  background-image: url(../../../public/textures/leak-1-wash.webp); opacity: .34; }
+
+.intro .rays { width: 44px; height: auto; margin-bottom: var(--space-5); }
+.intro .lede { max-width: 30ch; margin-top: var(--space-4); font: 400 var(--fs-lede)/var(--lh-lede) var(--font-display);
+  letter-spacing: var(--track-title); text-wrap: pretty; }
+@media (min-width: 768px) { .intro .lede { max-width: 34ch; } }
+.text-link { display: inline-flex; align-items: center; min-height: var(--tap); margin-top: var(--space-5);
+  color: var(--terracotta); font: 500 var(--fs-small)/1.3 var(--font-body);
+  text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 4px; }
+.text-link:hover { color: var(--terracotta-deep); }
+
+.rates dl { display: grid; gap: 0; margin-top: var(--space-5); border-top: 1px solid var(--line); }
+.rates dl > div { display: flex; flex-direction: column-reverse; gap: var(--space-2);
+  padding-block: var(--space-5); border-bottom: 1px solid var(--line); }
+.rates dd { font: 400 var(--fs-h3)/var(--lh-title) var(--font-display); letter-spacing: var(--track-title); }
+.rates .pill { margin-top: var(--space-6); }
+@media (min-width: 768px) {
+  .rates dl { grid-template-columns: repeat(3, 1fr); gap: var(--space-6); border-top: 0; }
+  .rates dl > div { border-top: 1px solid var(--line); border-bottom: 0; }
+}
+
+.enquire { padding-bottom: var(--section-gap) !important; }
+.enquire h2 { max-width: 12em; font-size: var(--fs-chapter); line-height: var(--lh-mega); letter-spacing: var(--track-mega); }
+.enquire .row { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4) var(--space-5); margin-top: var(--space-7); }
+.enquire .row p { font-size: var(--fs-small); color: var(--ink-quiet); }
+.enquire .row p a { color: var(--terracotta); text-underline-offset: 4px; }
+
+.foot { position: relative; border-top: 1px solid var(--line); }
+.foot .container { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: var(--space-2) var(--space-6); padding-block: var(--space-5) var(--space-6); font-size: var(--fs-small); color: var(--ink-quiet); }
+.foot ul { display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-5); }
+.foot a { display: inline-flex; align-items: center; min-height: var(--tap); color: var(--ink); text-underline-offset: 4px; }
+.foot a:hover { color: var(--terracotta); }
+
+/* ---------- Reduced motion: nothing pins or opens. The first photograph stays full, the rest are prints. ---------- */
+@media (prefers-reduced-motion: reduce) {
+  .plate, .plate.first { height: auto; }
+  .stage { position: relative; }
+  .wash { animation: none; }
+  .menu { animation: none; }
+}
+</style>
+</head>
+<body>
+
+<header class="nav" id="nav" data-over="photo">
+  <a class="logo" href="../index.html#/" aria-label="Shawnys Captures, home">
+    <img class="on-paper" src="../../../public/assets/shawnys-logo-darkroom.png" width="1000" height="747" alt="">
+    <img class="on-photo" src="../../../public/assets/shawnys-logo-linen.png" width="1000" height="747" alt="">
+  </a>
+  <nav class="bar grain" aria-label="Main">
+    <ul>
+      <li><a class="bar-link" href="../index.html#/weddings">Weddings</a></li>
+      <li><a class="bar-link" href="../index.html#/family">Family</a></li>
+      <li><a class="bar-link" href="../index.html#/events">Events</a></li>
+      <li><a class="bar-link" href="../index.html#/others">Others</a></li>
+      <li class="gap"><a class="bar-link" href="../index.html#/rates">Rates</a></li>
+      <li><a class="bar-link" href="../index.html#/about">About</a></li>
+    </ul>
+    <button class="pill menu-btn" id="menu-btn" type="button" aria-expanded="false" aria-controls="menu">Menu</button>
+    <a class="pill primary" href="../index.html#/enquire">Enquire</a>
+  </nav>
+</header>
+
+<div class="menu grain" id="menu" hidden>
+  <div class="leak" aria-hidden="true"></div>
+  <nav aria-label="Menu">
+    <ul>
+      <li><a class="menu-link" href="../index.html#/weddings">Weddings</a></li>
+      <li><a class="menu-link" href="../index.html#/family">Family</a></li>
+      <li><a class="menu-link" href="../index.html#/events">Events</a></li>
+      <li><a class="menu-link" href="../index.html#/others">Others</a></li>
+      <li class="gap"><a class="menu-link" href="../index.html#/rates">Rates</a></li>
+      <li><a class="menu-link" href="../index.html#/about">About</a></li>
+    </ul>
+  </nav>
+  <a class="pill primary large" href="../index.html#/enquire">Enquire</a>
+</div>
+
+<main id="main">
+  <div id="plates">
+    <!-- The first plate is written out so the photograph starts loading with the page, before any script or data.
+         The script then fills it from site.json like the others. -->
+    <section class="plate first" data-slug="vincent-amanda">
+      <div class="stage grain">
+        <div class="slot"></div>
+        <div class="leak wash" aria-hidden="true"></div>
+        <a class="plate-link" href="../index.html#/album/vincent-amanda" aria-label="Vincent &amp; Amanda, Wedding at CHIJMES">
+          <span class="window"><img alt="" fetchpriority="high" decoding="async"
+            src="https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/0895c0de-ed28-4409-8e08-e8bb79a552ac_rw_1920.jpg?h=554afc9fb1a8e199dc11b0c347cab25c"></span>
+        </a>
+        <div class="mat" aria-hidden="true"><div class="leak flare"></div></div>
+        <div class="plate-caption">
+          <span class="num" aria-hidden="true">No. 1</span>
+          <h2>Vincent <em>&amp; Amanda</em></h2>
+          <p class="caption">Wedding · CHIJMES</p>
+          <span class="cue" aria-hidden="true">See the album <i>&rarr;</i></span>
+        </div>
+        <div class="slips">
+          <div class="slip grain"><h1>Waiting for <em>good light.</em></h1></div>
+          <div class="slip grain tag" aria-hidden="true">
+            <p class="title">Vincent <em>&amp; Amanda</em></p>
+            <p class="caption">Wedding · CHIJMES</p>
+            <span class="cue">See the album <i>&rarr;</i></span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div class="after grain">
+    <div class="leak leak-intro" aria-hidden="true"></div>
+
+    <section class="intro" aria-labelledby="intro-h">
+      <div class="container">
+        <img class="rays" src="../../../public/assets/rays-golden-hour.svg" alt="" width="44" height="44">
+        <h2 class="caption" id="intro-h">Behind the camera</h2>
+        <p class="lede">I'm Shawn, a wedding photographer in Singapore. I document the day as it happens, in sneakers, mostly in the background, waiting for the moment the light finds the two of you.</p>
+        <a class="text-link" href="../index.html#/about">More about how I work</a>
+      </div>
+    </section>
+
+    <section class="rates" aria-labelledby="rates-h">
+      <div class="container">
+        <h2 class="caption" id="rates-h">Rates</h2>
+        <dl>
+          <div><dt class="caption">Wedding day</dt><dd>from $1,320</dd></div>
+          <div><dt class="caption">Pre-wedding</dt><dd>from $320</dd></div>
+          <div><dt class="caption">Delivery</dt><dd>4 to 6 weeks</dd></div>
+        </dl>
+        <a class="pill" href="../index.html#/rates">See the rates</a>
+      </div>
+    </section>
+
+    <section class="enquire" aria-labelledby="enquire-h">
+      <div class="leak leak-enquire" aria-hidden="true"></div>
+      <div class="container">
+        <h2 id="enquire-h">Tell me about <em>the two of you</em> first.</h2>
+        <div class="row">
+          <a class="pill primary large" href="../index.html#/enquire">Enquire</a>
+          <p>or write to <a data-email href="mailto:shawnys.sim@gmail.com">shawnys.sim@gmail.com</a></p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div class="container">
+        <ul>
+          <li><a data-email href="mailto:shawnys.sim@gmail.com">shawnys.sim@gmail.com</a></li>
+          <li><a data-instagram href="https://www.instagram.com/shawnyssim/" rel="noopener">Instagram</a></li>
+        </ul>
+        <p>© 2026 Shawnys Captures · Singapore</p>
+      </div>
+    </footer>
+  </div>
+</main>
+
+<template id="plate-tpl">
+  <section class="plate">
+    <div class="stage grain">
+      <div class="slot"></div>
+      <div class="leak wash" aria-hidden="true"></div>
+      <a class="plate-link"><span class="window"><img alt="" loading="lazy" decoding="async"></span></a>
+      <div class="mat" aria-hidden="true"><div class="leak flare"></div></div>
+      <div class="plate-caption">
+        <span class="num" aria-hidden="true"></span>
+        <h2></h2>
+        <p class="caption"></p>
+        <span class="cue" aria-hidden="true">See the album <i>&rarr;</i></span>
+      </div>
+      <div class="slips">
+        <div class="slip grain tag" aria-hidden="true">
+          <p class="title"></p>
+          <p class="caption"></p>
+          <span class="cue">See the album <i>&rarr;</i></span>
+        </div>
+      </div>
+    </div>
+  </section>
+</template>
+
+<script type="module">
+const $ = (sel, root = document) => root.querySelector(sel);
+const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
+const clamp = (v, lo = 0, hi = 1) => Math.min(hi, Math.max(lo, v));
+const ease = t => (t < .5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+const nav = $('#nav');
+const logo = $('.logo', nav);
+const platesRoot = $('#plates');
+const plates = [];
+let menuOpen = false;
+
+/* ---------- Plates ---------- */
+function setTitle(el, title) {
+  if (!el) return;
+  el.textContent = '';
+  const parts = String(title || '').split(' & ');
+  if (parts.length === 2 && parts[0] && parts[1]) {
+    el.append(parts[0] + ' ');
+    const em = document.createElement('em');
+    em.textContent = '& ' + parts[1];
+    el.append(em);
+  } else {
+    el.textContent = title || '';
+  }
+}
+
+function fill(section, album, index) {
+  const title = album.title || 'Album';
+  const meta = [album.type, album.venue].filter(Boolean).join(' · ');
+  const label = title + (album.type ? ', ' + album.type : '') + (album.venue ? ' at ' + album.venue : '');
+  const link = $('.plate-link', section);
+  const img = $('.window img', section);
+
+  section.dataset.slug = album.slug || '';
+  section.classList.toggle('flip', index % 2 === 1);
+  link.href = '../index.html#/album/' + encodeURIComponent(album.slug || '');
+  link.setAttribute('aria-label', label);
+  $('.num', section).textContent = 'No. ' + (index + 1);
+  setTitle($('.plate-caption h2', section), title);
+  setTitle($('.tag .title', section), title);
+  $$('.caption', section).forEach(p => { p.textContent = meta; p.hidden = !meta; });
+
+  const sources = [...new Set([album.hero, album.featured && album.featured[0], album.cover].filter(Boolean))];
+  let n = 0;
+  img.addEventListener('error', () => { n += 1; if (sources[n]) img.src = sources[n]; });
+  if (typeof album.focus === 'string' && album.focus) img.style.objectPosition = album.focus;
+  if (sources[0] && img.getAttribute('src') !== sources[0]) img.src = sources[0];
+}
+
+function register(section) {
+  const stage = $('.stage', section);
+  plates.push({
+    section, stage,
+    slot: $('.slot', section), win: $('.window', section), img: $('.window img', section),
+    mat: $('.mat', section), flare: $('.flare', section),
+    first: section.classList.contains('first'),
+    geo: null, o: -1, a: -1,
+  });
+}
+
+let vh = window.innerHeight;
+let logoPoint = { x: 80, y: 60 };
+
+function measure() {
+  vh = window.innerHeight;
+  const lr = logo.getBoundingClientRect();
+  logoPoint = { x: lr.left + lr.width / 2, y: lr.top + lr.height / 2 };
+  for (const p of plates) {
+    const sw = p.stage.offsetWidth, sh = p.stage.offsetHeight;
+    const l = p.slot.offsetLeft, t = p.slot.offsetTop, w = p.slot.offsetWidth, h = p.slot.offsetHeight;
+    if (!sw || !sh || w <= 0 || h <= 0) { p.geo = null; continue; }
+    const cover = Math.max(w / sw, h / sh);
+    p.geo = {
+      sw, sh, t, l, r: sw - l - w, b: sh - t - h,
+      /* closed, the photograph is drawn back a little, so the paper opens faster than the picture grows */
+      s0: Math.min(1, cover + (1 - cover) * .4),
+      dx: l + w / 2 - sw / 2, dy: t + h / 2 - sh / 2,
+    };
+    p.o = -1;
+  }
+}
+
+function openness(p, progress) {
+  if (reduce.matches) return p.first ? 1 : 0;
+  if (p.first) return 1 - ease(clamp((progress - .04) / .96));
+  return progress < .5 ? ease(clamp((progress - .04) / .3)) : 1 - ease(clamp((progress - .64) / .3));
+}
+
+function paint(p, o) {
+  const g = p.geo;
+  if (!g || Math.abs(o - p.o) < .0004) return;
+  p.o = o;
+  const c = 1 - o;
+  const t = (g.t * c).toFixed(1), r = (g.r * c).toFixed(1), b = (g.b * c).toFixed(1), l = (g.l * c).toFixed(1);
+  p.win.style.clipPath = `inset(${t}px ${r}px ${b}px ${l}px round ${(2 * c).toFixed(1)}px)`;
+  p.img.style.transform =
+    `translate3d(${(g.dx * c).toFixed(1)}px, ${(g.dy * c).toFixed(1)}px, 0) scale(${(1 - (1 - g.s0) * c).toFixed(4)})`;
+  p.mat.style.inset = `${t}px ${r}px ${b}px ${l}px`;
+  p.flare.style.opacity = (Math.sin(Math.PI * o) * .55).toFixed(3);
+  const s = p.stage.style;
+  s.setProperty('--c', c.toFixed(3));
+  s.setProperty('--cap', clamp((c - .5) / .5).toFixed(3));
+  s.setProperty('--tab', clamp((o - .7) / .3).toFixed(3));
+}
+
+function update() {
+  let overPhoto = false;
+  for (const p of plates) {
+    if (!p.geo) continue;
+    const rect = p.section.getBoundingClientRect();
+    if (rect.bottom < -80 || rect.top > vh + 80) continue;
+    const g = p.geo;
+    const travel = rect.height - g.sh;
+    const progress = travel > 1 ? clamp(-rect.top / travel) : 0;
+    const o = openness(p, progress);
+    paint(p, o);
+
+    const a = p.first || reduce.matches ? 1 : clamp(1 - rect.top / vh);
+    if (Math.abs(a - p.a) > .004) { p.a = a; p.stage.style.setProperty('--a', a.toFixed(3)); }
+
+    /* is the logo sitting on this photograph or on paper? */
+    const c = 1 - o;
+    const stageTop = reduce.matches || rect.top > 0 ? rect.top : Math.min(0, rect.bottom - g.sh);
+    const top = stageTop + g.t * c, bottom = stageTop + g.sh - g.b * c;
+    const left = g.l * c, right = g.sw - g.r * c;
+    if (logoPoint.x > left && logoPoint.x < right && logoPoint.y > top && logoPoint.y < bottom) overPhoto = true;
+  }
+  const state = overPhoto && !menuOpen ? 'photo' : 'paper';
+  if (nav.dataset.over !== state) nav.dataset.over = state;
+}
+
+let ticking = false;
+function requestUpdate() {
+  if (ticking) return;
+  ticking = true;
+  requestAnimationFrame(() => { ticking = false; update(); });
+}
+function remeasure() { measure(); update(); }
+
+register($('.plate.first'));
+remeasure();
+window.addEventListener('scroll', requestUpdate, { passive: true });
+window.addEventListener('resize', remeasure);
+window.addEventListener('orientationchange', remeasure);
+window.addEventListener('load', remeasure);
+reduce.addEventListener?.('change', remeasure);
+
+/* ---------- Data (not awaited at the top level, so the menu below never waits on the network) ---------- */
+loadData();
+async function loadData() {
+try {
+  const res = await fetch('../../../data/site.json');
+  if (!res.ok) throw new Error('site.json ' + res.status);
+  const data = await res.json();
+  const albums = Array.isArray(data?.albums) ? data.albums.filter(a => a && a.selected === true) : [];
+  const tpl = $('#plate-tpl');
+
+  albums.forEach((album, i) => {
+    let section;
+    if (i === 0) {
+      section = $('.plate.first');
+    } else {
+      section = tpl.content.firstElementChild.cloneNode(true);
+      platesRoot.append(section);
+      register(section);
+    }
+    fill(section, album, i);
+  });
+  remeasure();
+
+  const email = data?.site?.email;
+  if (email) $$('[data-email]').forEach(a => { a.href = 'mailto:' + email; a.textContent = email; });
+  const insta = data?.site?.instagram;
+  $$('[data-instagram]').forEach(a => {
+    if (insta) a.href = insta; else a.closest('li')?.remove();
+  });
+} catch (err) {
+  /* The first plate and everything after it still stand without the data. */
+  console.warn('Could not read site.json; showing the first plate only.', err);
+}
+}
+
+/* ---------- Phone menu ---------- */
+const menu = $('#menu');
+const menuBtn = $('#menu-btn');
+const main = $('#main');
+
+function setMenu(open, returnFocus = true) {
+  if (open === menuOpen) return;
+  menuOpen = open;
+  menu.hidden = !open;
+  menuBtn.setAttribute('aria-expanded', String(open));
+  menuBtn.textContent = open ? 'Close' : 'Menu';
+  document.body.classList.toggle('menu-open', open);
+  main.inert = open;
+  if (open) $('.menu-link', menu)?.focus();
+  else if (returnFocus) menuBtn.focus();
+  update();
+}
+menuBtn.addEventListener('click', () => setMenu(!menuOpen));
+document.addEventListener('keydown', e => { if (e.key === 'Escape' && menuOpen) { e.preventDefault(); setMenu(false); } });
+menu.addEventListener('click', e => { if (e.target.closest('a')) setMenu(false, false); });
+window.matchMedia('(min-width: 900px)').addEventListener?.('change', e => { if (e.matches) setMenu(false, false); });
+</script>
+</body>
+</html>

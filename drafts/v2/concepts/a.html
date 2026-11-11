@@ -1,0 +1,481 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shawnys Captures · Waiting for good light</title>
+<meta name="description" content="Shawn Sim photographs weddings, pre-weddings, families and events in Singapore.">
+<link rel="preconnect" href="https://cdn.myportfolio.com" crossorigin>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Averia+Serif+Libre:ital,wght@0,400;1,400&family=Libre+Franklin:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="base.css">
+<style>
+/* Concept A: THE ROLL.
+   Each selected album is one frame on a roll. Frames are sticky and the next one is pulled up over the
+   last. While a seam is in transit a light leak burns along it, the fogged end of a roll, and it is
+   gone by the time the frame is at rest. Names sit on small slips of torn paper with a frame counter. */
+
+html { overflow-x: clip; }
+html:has(dialog[open]) { overflow: hidden; }
+
+.skip { position: fixed; z-index: 40; left: var(--page-pad); top: var(--space-2); translate: 0 -200%; }
+.skip:focus-visible { translate: 0 0; }
+
+/* ---------- Paper slips (nav and album tabs): paper with tooth, a hand-torn edge, no gloss ---------- */
+.slip { position: relative; isolation: isolate; color: var(--ink);
+  filter: drop-shadow(0 1px 1px rgb(23 19 16 / .16)) drop-shadow(0 6px 14px rgb(23 19 16 / .18)); }
+.slip::before { content: ''; position: absolute; inset: 0; z-index: -1;
+  background: url(../../../public/textures/paper-grain.webp) 0 0 / 256px 256px, var(--paper);
+  background-blend-mode: multiply;
+  clip-path: polygon(0 3px, 6% 1px, 14% 3px, 23% 0, 34% 2px, 47% 1px, 58% 3px, 71% 0, 83% 2px, 92% 1px, 100% 3px,
+    calc(100% - 2px) 12%, 100% 24%, calc(100% - 3px) 37%, calc(100% - 1px) 52%, calc(100% - 4px) 66%,
+    calc(100% - 1px) 79%, calc(100% - 3px) 90%, 100% 100%,
+    88% calc(100% - 2px), 74% 100%, 61% calc(100% - 2px), 45% calc(100% - 1px), 30% 100%, 16% calc(100% - 2px), 0 100%,
+    2px 80%, 0 62%, 3px 44%, 1px 27%, 2px 12%); }
+
+.pill.ghost { border-color: transparent; background: transparent; }
+.pill.ghost:hover { background: color-mix(in srgb, var(--ink) 9%, transparent); }
+
+/* ---------- Header: rides over the photographs, then over the paper ---------- */
+.site-head { position: fixed; z-index: 20; inset: 0 0 auto 0; display: flex; justify-content: space-between;
+  align-items: flex-start; padding: var(--space-3) var(--page-pad) 0; pointer-events: none; }
+.site-head > * { pointer-events: auto; }
+
+/* Two inks of the same mark, cut at the exact line where the paper meets the photograph. */
+.logo { position: relative; display: block; width: 120px; aspect-ratio: 1000 / 747; --cut: 100%; }
+.logo img { position: absolute; inset: 0; width: 100%; height: 100%; }
+.logo .ink-linen { clip-path: inset(0 0 calc(100% - var(--cut)) 0); }
+.logo .ink-dark { clip-path: inset(var(--cut) 0 0 0); }
+.logo:focus-visible { outline-color: var(--ember); }
+@media (min-width: 1024px) { .logo { width: 136px; } }
+
+.nav { display: flex; align-items: center; gap: var(--space-1); padding: var(--space-2); margin-top: var(--space-1); }
+.nav ul { display: none; align-items: center; gap: var(--space-1); }
+.nav .sep { width: 1px; height: var(--space-5); margin-inline: var(--space-2); background: var(--line); }
+@media (min-width: 900px) {
+  .nav ul { display: flex; }
+  .nav .menu-btn { display: none; }
+}
+
+/* ---------- Phone menu: the same links on a sheet of paper ---------- */
+.menu { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0;
+  padding: 0; border: 0; background: var(--paper); color: var(--ink); overflow: auto; }
+.menu::backdrop { background: var(--paper); }
+.menu[open] { animation: sheet 350ms var(--ease-out); }
+@keyframes sheet { from { opacity: 0; transform: translateY(var(--space-3)); } }
+.menu-sheet { min-height: 100%; display: flex; flex-direction: column; gap: var(--space-6);
+  padding: var(--space-3) var(--page-pad) var(--space-7); overflow: hidden; }
+.menu-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.menu-top img { width: 120px; height: auto; }
+.menu-top .pill { margin-top: var(--space-3); }
+.menu-list a { display: flex; align-items: center; min-height: var(--space-8); border-bottom: 1px solid var(--line);
+  font: 400 var(--fs-h2)/var(--lh-title) var(--font-display); letter-spacing: var(--track-title); text-decoration: none; }
+.menu-list li:first-child a { border-top: 1px solid var(--line); }
+.menu-list a:hover { color: var(--terracotta); }
+.menu .leak { right: 0; bottom: 0; width: 100%; height: 60%; z-index: -1;
+  background-image: url(../../../public/textures/leak-2-wash.webp);
+  -webkit-mask-image: linear-gradient(to top, #000, transparent); mask-image: linear-gradient(to top, #000, transparent); }
+
+/* ---------- The roll ---------- */
+.roll { position: relative; min-height: 100vh; min-height: 100svh; background: var(--dark); }
+.roll.has-plates { padding-bottom: 100vh; padding-bottom: 100svh; }
+.roll.has-plates + .after { margin-top: -100vh; margin-top: -100svh; }
+
+.roll-note { min-height: 100vh; min-height: 100svh; display: grid; place-content: center; justify-items: start;
+  gap: var(--space-5); padding: var(--space-10) var(--page-pad); color: var(--on-dark); }
+.roll-note p { font: 400 var(--fs-lede)/var(--lh-lede) var(--font-display); max-width: 22em; }
+.roll-note[hidden] { display: none; }
+
+.plate { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; background: var(--dark); }
+.plate-link { position: absolute; inset: 0; display: block; color: inherit; text-decoration: none; }
+.plate-link:focus-visible { outline: 3px solid var(--paper); outline-offset: -10px; border-radius: 0; }
+.plate-img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover;
+  transition: opacity 700ms var(--ease-out); }
+.plate-img.is-loading { opacity: 0; }
+
+/* A Darkroom scrim in the top-left corner only, so the Linen logo has a calm ground. */
+.plate-shade { position: absolute; left: 0; top: 0; width: min(560px, 100%); height: 260px; pointer-events: none;
+  background: radial-gradient(ellipse 75% 100% at 0 0, rgb(23 19 16 / .55), rgb(23 19 16 / .28) 45%, transparent 72%); }
+
+/* The first frame of a roll is always a little fogged. It clears as the photograph arrives. */
+.first-fog { position: absolute; left: 0; top: 0; width: 38%; height: 100%; pointer-events: none; opacity: 0;
+  background: url(../../../public/textures/leak-1.webp) center / 100% 100% no-repeat; mix-blend-mode: screen; }
+.plate.is-developed .first-fog { animation: fog-clear 1800ms var(--ease-out) both; }
+@keyframes fog-clear { from { opacity: .85; } to { opacity: 0; } }
+
+/* Album tab */
+.tab { position: absolute; left: var(--page-pad); bottom: var(--space-6); width: max-content;
+  max-width: min(26rem, calc(100% - 2 * var(--page-pad))); padding: var(--space-4) var(--space-5);
+  transform-origin: 0 100%; opacity: 0; translate: 0 var(--space-5); rotate: -2deg;
+  transition: opacity 600ms var(--ease-out), translate 800ms var(--ease-out), rotate 800ms var(--ease-out); }
+.plate.is-current .tab, .plate-link:focus-visible .tab { opacity: 1; translate: 0 0; rotate: -.6deg; }
+.plate-link:focus-visible .tab { outline: 2px solid var(--terracotta); outline-offset: 3px; }
+.tab-top { display: flex; justify-content: space-between; align-items: baseline; gap: var(--space-5); }
+.tab-top .count { color: var(--ink); white-space: nowrap; }
+.count-num { display: inline-block; height: 1.3em; overflow: hidden; vertical-align: bottom; }
+.count-num > span { display: block; translate: 0 100%; transition: translate 700ms var(--ease-out) 150ms; }
+.plate.is-current .count-num > span, .plate-link:focus-visible .count-num > span { translate: 0 0; }
+.tab-title { margin-top: var(--space-2); font-size: var(--fs-h3); }
+.tab-venue { margin-top: var(--space-1); font-size: var(--fs-small); line-height: var(--lh-body); color: var(--ink-quiet); }
+.tab-go { margin-top: var(--space-3); font: 500 var(--fs-pill)/1.3 var(--font-body); color: var(--terracotta); }
+.tab-go span { display: inline-block; transition: translate 250ms var(--ease); }
+@media (hover: hover) {
+  .plate-link:hover .tab-go { text-decoration: underline; text-underline-offset: 3px; }
+  .plate-link:hover .tab-go span { translate: var(--space-1) 0; }
+}
+@media (min-width: 768px) {
+  .tab { bottom: var(--space-7); }
+  .plate:nth-child(even) .tab { left: auto; right: var(--page-pad); transform-origin: 100% 100%; rotate: 2deg; }
+  .plate.is-current:nth-child(even) .tab, .plate:nth-child(even) .plate-link:focus-visible .tab { rotate: .6deg; }
+}
+
+/* ---------- The burn: one leak that travels with whichever seam is in transit ----------
+   It lives outside the plates so it can screen over both photographs at once. Script sets --y (the seam's
+   distance from the top of the viewport), --p (0 to 1 through the hand-over) and the opacity, which is
+   zero at both ends: nothing is left on a photograph at rest. */
+.burn { position: fixed; z-index: 10; left: 0; top: 0; width: 100%; height: 60vh; height: 60svh;
+  --seam-at: 20vh; --y: -100vh; --p: 0; --dir: 1;
+  transform: translate3d(0, calc(var(--y) - var(--seam-at)), 0); opacity: 0; overflow: hidden;
+  pointer-events: none; mix-blend-mode: screen; will-change: transform, opacity; }
+@supports (height: 1svh) { .burn { --seam-at: 20svh; } }
+.burn[data-v="1"] { --dir: -1; }
+.burn > * { position: absolute; mix-blend-mode: screen; background-position: center; background-size: 100% 100%;
+  background-repeat: no-repeat; }
+.burn-below, .burn-above { left: -25%; width: 150%; background-image: url(../../../public/textures/leak-3.webp);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 55%, transparent 96%);
+  mask-image: linear-gradient(to bottom, transparent, #000 12%, #000 55%, transparent 96%); }
+.burn-below { top: 22%; height: 78%;
+  transform: translateX(calc((var(--p) - .5) * var(--dir) * 24%)) scaleX(var(--dir)); }
+.burn-above { top: -1%; height: 40%; opacity: .7;
+  transform: translateX(calc((.5 - var(--p)) * var(--dir) * 18%)) scale(calc(var(--dir) * -1), -1); }
+.burn-line { left: 0; right: 0; top: calc(var(--seam-at) - 2px); height: 4px; opacity: .8; filter: blur(1.5px);
+  background-image: linear-gradient(90deg, transparent, rgb(242 107 46 / .7) 18%, rgb(255 228 170 / .95) 46%,
+    rgb(255 244 214) 54%, rgb(242 107 46 / .7) 82%, transparent);
+  background-size: 160% 100%; background-position: calc(var(--p) * 100%) 0; }
+.burn-bloom { top: 0; left: 0; width: min(60%, 520px); height: 100%; opacity: .75;
+  background-image: url(../../../public/textures/leak-1.webp);
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 60%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 30%, #000 60%, transparent); }
+.burn[data-v="1"] .burn-bloom { left: auto; right: 0; background-image: url(../../../public/textures/leak-2.webp); }
+.burn[data-v="2"] .burn-bloom { transform: scaleY(-1); opacity: .5; }
+@media (prefers-reduced-motion: reduce) { .burn, .first-fog { display: none; } }
+
+/* ---------- After the roll: paper ---------- */
+.after { z-index: 2; background: var(--paper);
+  clip-path: polygon(0 4px, 7% 1px, 15% 5px, 24% 2px, 33% 4px, 41% 0, 52% 3px, 60% 1px, 69% 5px, 78% 2px, 87% 4px,
+    94% 1px, 100% 3px, 100% 100%, 0 100%); }
+.after > .leak.top { left: 0; top: 0; width: 100%; height: 420px; z-index: -1;
+  background-image: url(../../../public/textures/leak-3-wash.webp);
+  -webkit-mask-image: linear-gradient(to bottom, #000 30%, transparent); mask-image: linear-gradient(to bottom, #000 30%, transparent); }
+.block { padding-block: var(--section-gap) 0; }
+.block .caption { margin-bottom: var(--space-5); }
+
+.intro h2 { font-size: var(--fs-mega); line-height: var(--lh-mega); letter-spacing: var(--track-mega); }
+.intro .lede { margin-top: var(--space-7); max-width: 24em; font: 400 var(--fs-lede)/var(--lh-lede) var(--font-display); }
+.intro .pill { margin-top: var(--space-6); }
+
+.rates dl { display: grid; gap: var(--space-5); }
+.rates dl > div { padding-top: var(--space-4); border-top: 1px solid var(--line); }
+.rates dt { margin-bottom: var(--space-2); }
+.rates dd { font: 400 var(--fs-h2)/var(--lh-title) var(--font-display); letter-spacing: var(--track-title); }
+.rates .pill { margin-top: var(--space-6); }
+@media (min-width: 768px) { .rates dl { grid-template-columns: repeat(3, 1fr); gap: var(--space-6); } }
+
+.enquire { position: relative; padding-bottom: var(--section-gap); }
+.enquire .rays { width: auto; height: var(--space-6); margin-bottom: var(--space-5); margin-left: calc(-1 * var(--space-2)); }
+.enquire h2 { font-size: var(--fs-chapter); line-height: var(--lh-mega); letter-spacing: var(--track-mega); max-width: 12em; }
+.enquire .actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4) var(--space-5); margin-top: var(--space-7); }
+.enquire .actions p { font-size: var(--fs-small); color: var(--ink-quiet); }
+.enquire .leak { right: 0; bottom: 0; width: min(70%, 720px); height: 100%; z-index: -1;
+  background-image: url(../../../public/textures/leak-2-wash.webp);
+  -webkit-mask-image: linear-gradient(to left, #000, transparent 85%); mask-image: linear-gradient(to left, #000, transparent 85%); }
+
+.text-link { color: var(--terracotta); text-underline-offset: 3px; }
+.text-link:hover { color: var(--terracotta-deep); }
+.enquire .text-link, .foot .text-link { color: var(--ink); }
+
+.foot { border-top: 1px solid var(--line); }
+.foot .container { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-3) var(--space-6);
+  padding-block: var(--space-6); font-size: var(--fs-small); line-height: var(--lh-small); color: var(--ink-quiet); }
+.foot ul { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
+.foot a { display: inline-flex; align-items: center; min-height: var(--tap); overflow-wrap: anywhere; }
+.foot p { display: flex; align-items: center; min-height: var(--tap); }
+</style>
+</head>
+<body>
+<a class="pill skip" href="#intro">Skip to the introduction</a>
+
+<header class="site-head" id="head">
+  <a class="logo" id="logo" href="../index.html" aria-label="Shawnys Captures, home">
+    <img class="ink-linen" src="../../../public/assets/shawnys-logo-linen.png" alt="" width="1000" height="747">
+    <img class="ink-dark" src="../../../public/assets/shawnys-logo-darkroom.png" alt="" width="1000" height="747">
+  </a>
+  <nav class="nav slip" aria-label="Main">
+    <ul>
+      <li><a class="pill ghost" href="../index.html#/weddings">Weddings</a></li>
+      <li><a class="pill ghost" href="../index.html#/family">Family</a></li>
+      <li><a class="pill ghost" href="../index.html#/events">Events</a></li>
+      <li><a class="pill ghost" href="../index.html#/others">Others</a></li>
+      <li class="sep" aria-hidden="true"></li>
+      <li><a class="pill ghost" href="../index.html#/rates">Rates</a></li>
+      <li><a class="pill ghost" href="../index.html#/about">About</a></li>
+    </ul>
+    <button class="pill ghost menu-btn" id="menu-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="menu">Menu</button>
+    <a class="pill primary" href="../index.html#/enquire">Enquire</a>
+  </nav>
+</header>
+
+<dialog class="menu" id="menu" aria-label="Menu">
+  <div class="menu-sheet grain">
+    <span class="leak on-paper" aria-hidden="true"></span>
+    <div class="menu-top">
+      <img src="../../../public/assets/shawnys-logo-darkroom.png" alt="Shawnys Captures" width="1000" height="747">
+      <button class="pill" id="menu-close" type="button">Close</button>
+    </div>
+    <nav aria-label="Menu">
+      <ul class="menu-list">
+        <li><a href="../index.html#/weddings">Weddings</a></li>
+        <li><a href="../index.html#/family">Family</a></li>
+        <li><a href="../index.html#/events">Events</a></li>
+        <li><a href="../index.html#/others">Others</a></li>
+        <li><a href="../index.html#/rates">Rates</a></li>
+        <li><a href="../index.html#/about">About</a></li>
+      </ul>
+    </nav>
+    <div><a class="pill primary large" href="../index.html#/enquire">Enquire</a></div>
+  </div>
+</dialog>
+
+<main>
+  <h1 class="visually-hidden">Shawnys Captures: wedding, family and event photography in Singapore</h1>
+
+  <section class="roll" id="roll" aria-label="Selected albums" aria-busy="true">
+    <div class="roll-note" id="roll-note">
+      <p class="visually-hidden" id="roll-status" role="status">Loading the photographs.</p>
+      <noscript><p>The photographs need JavaScript to load. The albums are all on the <a href="../index.html">main page</a>.</p></noscript>
+    </div>
+  </section>
+
+  <div class="after grain" id="after">
+    <span class="leak on-paper top" aria-hidden="true"></span>
+
+    <section class="block intro" id="intro" aria-labelledby="intro-h">
+      <div class="container">
+        <p class="caption">End of the roll</p>
+        <h2 id="intro-h">Waiting for <em>good light.</em></h2>
+        <p class="lede">I'm Shawn, a wedding photographer in Singapore. I document the day as it happens, in sneakers, mostly in the background, waiting for the moment <em>the light finds the two of you.</em></p>
+        <a class="pill" href="../index.html#/about">About me</a>
+      </div>
+    </section>
+
+    <section class="block rates" aria-labelledby="rates-h">
+      <div class="container">
+        <h2 class="caption" id="rates-h">Rates</h2>
+        <dl>
+          <div><dt class="caption">Wedding day</dt><dd>from $1,320</dd></div>
+          <div><dt class="caption">Pre-wedding</dt><dd>from $320</dd></div>
+          <div><dt class="caption">Delivery</dt><dd>4 to 6 weeks</dd></div>
+        </dl>
+        <a class="pill" href="../index.html#/rates">See all the rates</a>
+      </div>
+    </section>
+
+    <section class="block enquire" aria-labelledby="enquire-h">
+      <span class="leak on-paper" aria-hidden="true"></span>
+      <div class="container">
+        <img class="rays" src="../../../public/assets/rays-golden-hour.svg" alt="" width="120" height="48">
+        <h2 id="enquire-h">Tell me about <em>the two of you</em> first.</h2>
+        <div class="actions">
+          <a class="pill primary large" href="../index.html#/enquire">Enquire</a>
+          <p>Or write to me at <a class="text-link" data-email href="mailto:shawnys.sim@gmail.com">shawnys.sim@gmail.com</a></p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div class="container">
+        <ul>
+          <li><a class="text-link" data-email href="mailto:shawnys.sim@gmail.com">shawnys.sim@gmail.com</a></li>
+          <li><a class="text-link" data-instagram href="https://www.instagram.com/shawnyssim/" rel="noopener">Instagram</a></li>
+        </ul>
+        <p>© 2026 Shawnys Captures · Singapore</p>
+      </div>
+    </footer>
+  </div>
+</main>
+
+<div class="burn" id="burn" aria-hidden="true">
+  <span class="burn-above"></span>
+  <span class="burn-below"></span>
+  <span class="burn-bloom"></span>
+  <span class="burn-line"></span>
+</div>
+
+<script type="module">
+const $ = (sel, root = document) => root.querySelector(sel);
+const roll = $('#roll'), note = $('#roll-note'), statusEl = $('#roll-status');
+const after = $('#after'), burn = $('#burn'), logo = $('#logo');
+const menu = $('#menu'), menuBtn = $('#menu-btn');
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+const HOME = '../index.html';
+const str = v => (typeof v === 'string' && v.trim() ? v.trim() : '');
+const el = (tag, cls, text) => {
+  const node = document.createElement(tag);
+  if (cls) node.className = cls;
+  if (text != null) node.textContent = text;
+  return node;
+};
+
+let plates = [];
+let seams = [after];
+
+/* ---------- Menu ---------- */
+menuBtn.addEventListener('click', () => {
+  if (typeof menu.showModal === 'function') menu.showModal(); else menu.setAttribute('open', '');
+  menuBtn.setAttribute('aria-expanded', 'true');
+});
+const closeMenu = () => {
+  if (typeof menu.close === 'function' && menu.open) menu.close(); else menu.removeAttribute('open');
+  menuBtn.setAttribute('aria-expanded', 'false');
+};
+menu.addEventListener('close', () => menuBtn.setAttribute('aria-expanded', 'false'));
+$('#menu-close').addEventListener('click', closeMenu);
+menu.addEventListener('click', e => { if (e.target instanceof Element && e.target.closest('a')) closeMenu(); });
+window.matchMedia('(min-width: 900px)').addEventListener('change', e => { if (e.matches) closeMenu(); });
+
+/* ---------- Plates ---------- */
+function sourcesOf(album) {
+  const list = [album.hero, Array.isArray(album.featured) ? album.featured[0] : null, album.cover];
+  return [...new Set(list.map(str).filter(Boolean))];
+}
+
+function buildPlate(album, i, total) {
+  const title = str(album.title) || 'Untitled album';
+  const type = str(album.type), venue = str(album.venue);
+  const plate = el('article', 'plate');
+
+  const link = el('a', 'plate-link');
+  link.href = `${HOME}#/album/${encodeURIComponent(album.slug)}`;
+  link.setAttribute('aria-label',
+    title + (type ? `, ${type}` : '') + (venue ? (type ? ' at ' : ', at ') + venue : ''));
+
+  const img = el('img', 'plate-img is-loading');
+  img.alt = '';
+  img.decoding = 'async';
+  if (i === 0) img.setAttribute('fetchpriority', 'high'); else img.loading = 'lazy';
+  img.style.objectPosition = str(album.focus) || '50% 40%';
+  const queue = sourcesOf(album);
+  img.addEventListener('load', () => { img.classList.remove('is-loading'); plate.classList.add('is-developed'); });
+  img.addEventListener('error', () => {
+    if (queue.length) img.src = queue.shift(); else img.remove();
+  });
+  img.src = queue.shift();
+
+  const tab = el('div', 'tab slip');
+  const top = el('div', 'tab-top caption');
+  const count = el('span', 'count');
+  const num = el('span', 'count-num');
+  num.append(el('span', '', String(i + 1).padStart(2, '0')));
+  count.append(num, ` / ${String(total).padStart(2, '0')}`);
+  top.append(count);
+  if (type) top.append(el('span', '', type));
+  tab.append(top, el('h2', 'tab-title', title));
+  if (venue) tab.append(el('div', 'tab-venue', venue));
+  const go = el('div', 'tab-go', 'View the album ');
+  const arrow = el('span', '', '→');
+  arrow.setAttribute('aria-hidden', 'true');
+  go.append(arrow);
+  tab.append(go);
+
+  link.append(img, el('span', 'plate-shade'));
+  if (i === 0) link.append(el('span', 'first-fog'));
+  link.append(tab);
+  plate.append(link);
+  return plate;
+}
+
+function fail() {
+  roll.removeAttribute('aria-busy');
+  statusEl.className = '';
+  statusEl.textContent = 'The photographs did not load this time. The albums are all still here.';
+  if (!$('a', note)) {
+    const a = el('a', 'pill', 'See the albums');
+    a.href = `${HOME}#/weddings`;
+    note.append(a);
+  }
+}
+
+/* ---------- Scroll: tabs settle, the seam burns, the logo changes ink ---------- */
+let queued = false;
+function update() {
+  queued = false;
+  const vh = window.innerHeight || 1;
+
+  plates.forEach((plate, i) => {
+    const top = i === 0 ? 0 : plate.getBoundingClientRect().top;
+    plate.classList.toggle('is-current', top < vh * 0.12);
+  });
+
+  // The logo: Linen over the photograph, Darkroom over the paper, split at the paper's edge.
+  const box = logo.getBoundingClientRect();
+  const paperTop = after.getBoundingClientRect().top;
+  logo.style.setProperty('--cut', `${Math.max(0, Math.min(box.height, paperTop - box.top)).toFixed(1)}px`);
+
+  // The seam in transit, if any. Strength follows a sine: nothing at either end of the hand-over.
+  let best = null;
+  if (plates.length && !reduce.matches) {
+    seams.forEach((seam, i) => {
+      const top = seam.getBoundingClientRect().top;
+      if (top <= 0.5 || top >= vh - 0.5) return;
+      const p = 1 - top / vh;
+      const k = Math.sin(Math.PI * p);
+      if (!best || k > best.k) best = { top, p, k, i };
+    });
+  }
+  if (best) {
+    burn.dataset.v = String(best.i % 3);
+    burn.style.setProperty('--y', `${best.top.toFixed(1)}px`);
+    burn.style.setProperty('--p', best.p.toFixed(4));
+    burn.style.opacity = Math.pow(best.k, 0.7).toFixed(3);
+  } else {
+    burn.style.opacity = '0';
+  }
+}
+const requestUpdate = () => { if (!queued) { queued = true; requestAnimationFrame(update); } };
+window.addEventListener('scroll', requestUpdate, { passive: true });
+window.addEventListener('resize', requestUpdate);
+window.addEventListener('load', requestUpdate);
+reduce.addEventListener('change', requestUpdate);
+requestUpdate();
+
+/* ---------- Data ---------- */
+try {
+  const res = await fetch('../../../data/site.json');
+  if (!res.ok) throw new Error(`site.json ${res.status}`);
+  const data = await res.json();
+
+  const site = data && typeof data.site === 'object' && data.site ? data.site : {};
+  const email = str(site.email), insta = str(site.instagram);
+  if (email) document.querySelectorAll('[data-email]').forEach(a => { a.href = `mailto:${email}`; a.textContent = email; });
+  if (/^https:\/\//.test(insta)) document.querySelectorAll('[data-instagram]').forEach(a => { a.href = insta; });
+
+  const albums = (Array.isArray(data && data.albums) ? data.albums : [])
+    .filter(a => a && a.selected === true && str(a.slug) && sourcesOf(a).length);
+  if (!albums.length) throw new Error('no selected albums');
+
+  plates = albums.map((album, i) => buildPlate(album, i, albums.length));
+  note.hidden = true;
+  roll.append(...plates);
+  roll.classList.add('has-plates');
+  roll.removeAttribute('aria-busy');
+  seams = [...plates.slice(1), after];
+  void roll.offsetHeight;   // settle styles so the first tab eases in
+  requestUpdate();
+} catch (err) {
+  console.error(err);
+  fail();
+}
+</script>
+</body>
+</html>

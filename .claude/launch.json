@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "photo-draft",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": ["-m", "http.server", "4341"],
+      "port": 4341
+    }
+  ]
+}

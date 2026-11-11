@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shawnys Captures · Wedding photography in Singapore</title>
+<meta name="description" content="Shawn Sim photographs weddings, pre-weddings, families and events in Singapore. Draft v0.3.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdn.myportfolio.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Libre+Franklin:wght@400;500;600&family=Wittgenstein:ital,wght@0,400..500;1,400..500&display=swap">
+<link rel="stylesheet" href="base.css">
+<link rel="stylesheet" href="site.css">
+<link rel="stylesheet" href="landing.css">
+</head>
+<body>
+<div class="sheet" aria-hidden="true"></div>
+
+<!-- The opening (home only): paper with the logo and one line, the photograph showing through a small aperture.
+     Scrolling opens the aperture until the photograph fills the screen; the tab bar takes over below. -->
+<section class="intro" id="intro">
+  <div class="intro-pin">
+    <div class="intro-paper">
+      <div class="pages"></div>
+      <span class="intro-cue" aria-hidden="true">Scroll</span>
+    </div>
+    <section class="hero" id="hero" aria-label="Photographs from selected albums">
+      <div class="hero-top">
+        <a class="logo" href="#/" aria-label="Shawnys Captures, home"><img src="../../public/assets/shawnys-logo-linen.png" width="1000" height="747" alt=""></a>
+        <span class="rule" aria-hidden="true"></span>
+        <a class="text" href="#/rates">Rates</a>
+        <a class="text" href="#/enquire">Enquire</a>
+      </div>
+    </section>
+  </div>
+</section>
+
+<!-- The tab bar: in the page under the photograph, then stuck to the top once you scroll to it. -->
+<header class="bar" id="bar">
+  <div class="container">
+    <nav aria-label="Main"><ul id="tabs">
+      <li><a class="tab" href="#/weddings">Weddings</a></li><li><a class="tab" href="#/family">Family</a></li>
+      <li><a class="tab" href="#/events">Events</a></li><li><a class="tab" href="#/others">Others</a></li>
+      <li><a class="tab" href="#/rates">Rates</a></li><li><a class="tab" href="#/faq">FAQ</a></li>
+    </ul></nav>
+    <a class="pill primary" href="#/enquire">Enquire</a>
+    <a class="bar-logo" href="#/" aria-label="Shawnys Captures, home"><img src="../../public/assets/shawnys-logo-darkroom.png" width="1000" height="747" alt=""></a>
+  </div>
+</header>
+
+<main tabindex="-1">
+  <!-- always under the bar on the home tabs; the copy and the picture follow the open tab -->
+  <section class="about container" id="about" aria-label="About Shawn">
+    <div class="about-pic box" id="aboutPic"></div>
+    <p class="about-text" id="aboutText"></p>
+  </section>
+
+  <div id="content"></div>
+
+  <section class="closing container" id="closing">
+    <div class="closing-box">
+      <div class="closing-text">
+        <h2>Have a date? Tell me where and when.</h2>
+        <p class="quiet">We meet before you book. You should know who'll be following you around.</p>
+        <div class="row"><a class="pill primary large" href="#/enquire">Enquire</a></div>
+      </div>
+      <div class="box print dusk" aria-hidden="true"></div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="container">
+    <nav aria-label="Footer" id="footLinks"></nav>
+    <span>© 2026 Shawnys Captures · Singapore</span>
+  </div>
+</footer>
+
+<div class="viewer" id="viewer" role="dialog" aria-modal="true" aria-label="Photograph viewer">
+  <div class="v-top"><span id="vTitle"></span><span class="count" id="vCount" aria-live="polite"></span><button type="button" id="vClose">Close</button></div>
+  <div class="v-stage">
+    <span class="v-wait" aria-hidden="true"></span>
+    <img id="vImg" alt="">
+    <div class="v-nav">
+      <button type="button" id="vPrev" aria-label="Previous photograph"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M13 8H3M7 4 3 8l4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <button type="button" id="vNext" aria-label="Next photograph"><svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
+  </div>
+</div>
+
+<script type="module" src="site.js"></script>
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Shawnys Captures · Wedding photography in Singapore</title>
+<meta name="description" content="Shawn Sim photographs weddings, pre-weddings, families and events in Singapore. Waiting for good light.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Averia+Serif+Libre:ital,wght@0,400;1,400&family=Libre+Franklin:wght@400;500;600&display=swap">
+<link rel="stylesheet" href="base.css">
+<style>
+/* Concept B, "Developing". One pinned stage; each album's photograph comes up out of warm light the way
+   a print comes up in the tray. Sizes, spacing and colour are base.css tokens throughout. */
+
+/* ---------- Header: logo left, a paper tab of links right. Rides over photographs and paper. ---------- */
+.skip { position: fixed; left: var(--page-pad); top: -100px; z-index: 100; }
+.skip:focus { top: var(--space-3); }
+
+.site-head { position: fixed; inset: 0 0 auto 0; z-index: 50; display: flex; justify-content: space-between;
+  align-items: flex-start; gap: var(--space-4); padding: var(--space-3) var(--page-pad); pointer-events: none; }
+.site-head > * { pointer-events: auto; }
+/* On paper, content scrolling under the fixed logo fades into the ground instead of colliding with it */
+.site-head::before { content: ''; position: absolute; inset: 0 0 auto 0; height: 152px; z-index: -1; pointer-events: none;
+  background: linear-gradient(to bottom, var(--paper) 50%, transparent); opacity: 0; transition: opacity 400ms var(--ease); }
+.site-head.on-paper::before { opacity: 1; }
+
+.logo { position: relative; display: block; flex: none; width: clamp(120px, 9vw + 60px, 140px); aspect-ratio: 1000 / 747; }
+.logo img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; transition: opacity 400ms var(--ease); }
+.logo .logo-dark { opacity: 0; }
+.site-head.on-paper .logo .logo-dark { opacity: 1; }
+.site-head.on-paper .logo .logo-linen { opacity: 0; }
+
+.tab { display: flex; align-items: center; gap: var(--space-1); min-height: var(--tap); padding: var(--space-1);
+  background: var(--paper); border: 1px solid var(--line); border-radius: var(--radius-pill); }
+.tab-links { display: none; align-items: center; }
+.tab-links a { position: relative; display: inline-flex; align-items: center; min-height: 36px; padding: 0 var(--space-3);
+  border-radius: var(--radius-pill); text-decoration: none; font: 500 var(--fs-pill)/1 var(--font-body);
+  transition: background-color 250ms var(--ease); }
+.tab-links a::before { content: ''; position: absolute; inset: -4px 0; }
+.tab-links a:hover { background: var(--paper-deep); }
+.tab-links .sep { margin-left: var(--space-2); padding-left: var(--space-2); border-left: 1px solid var(--line); }
+.tab .menu-btn { border-color: transparent; }
+@media (min-width: 880px) {
+  .tab { padding-left: var(--space-2); }
+  .tab-links { display: flex; }
+  .tab .menu-btn { display: none; }
+}
+
+/* Phone menu: a sheet of paper with the same links, set large */
+dialog.menu { position: fixed; inset: 0; width: 100%; height: 100%; max-width: none; max-height: none; margin: 0;
+  border: 0; padding: var(--space-3) var(--page-pad) var(--space-6); background: var(--paper); color: var(--ink);
+  overflow: auto; }
+dialog.menu[open] { display: flex; flex-direction: column; animation: sheet-in 420ms var(--ease-out); }
+dialog.menu::backdrop { background: var(--dark); }
+@keyframes sheet-in { from { opacity: 0; transform: translateY(-8px); } }
+.menu-top { display: flex; justify-content: space-between; align-items: flex-start; }
+.menu-top img { width: 120px; height: auto; }
+.menu-top .pill { margin-top: var(--space-1); }
+.menu-links { margin-top: var(--space-7); display: grid; }
+.menu-links a { display: flex; align-items: center; min-height: 56px; text-decoration: none;
+  font: 400 var(--fs-h2)/var(--lh-title) var(--font-display); letter-spacing: var(--track-title);
+  border-bottom: 1px solid var(--line); }
+.menu-links a:hover, .menu-links a:focus-visible { font-style: italic; color: var(--terracotta); }
+.menu .pill.large { align-self: flex-start; margin-top: var(--space-6); }
+.menu .leak { right: -30%; bottom: -8%; width: 130%; aspect-ratio: 16 / 10; z-index: -1; opacity: .4;
+  background-image: url(../../../public/textures/leak-2-wash.webp); }
+
+/* ---------- The track and the pinned stage ---------- */
+.track { position: relative; height: calc((var(--n, 1) - 1) * 85vh + 150vh);
+  height: calc((var(--n, 1) - 1) * 85svh + 150svh); }
+.stage { position: sticky; top: 0; height: 100vh; height: 100svh; overflow: hidden; z-index: 1;
+  background: var(--dark); color: var(--on-dark); --near: 0; }
+.stage :focus-visible { outline-color: var(--honey); }
+
+/* The index rail. It, the list and its items stay unpositioned so each plate (inside its list item)
+   fills the stage itself. */
+.rail { height: 100%; display: flex; flex-direction: column; justify-content: flex-end; align-items: flex-start;
+  padding: 0 var(--page-pad) calc(var(--page-pad) + var(--tag-h, 120px) + var(--space-5)); }
+.count { position: relative; z-index: 5; pointer-events: none; color: var(--on-dark); margin-bottom: var(--space-2);
+  text-shadow: 0 1px 10px rgba(23, 19, 16, .6); }
+.index { display: block; }
+.name { position: relative; z-index: 5; display: flex; align-items: center; min-height: var(--tap); text-align: left;
+  color: var(--on-dark); font: 400 var(--fs-h3)/var(--lh-title) var(--font-display); letter-spacing: var(--track-title);
+  text-shadow: 0 1px 14px rgba(23, 19, 16, .55); }
+/* The three rays from the logo mark the print that is up */
+.name::before { content: ''; flex: none; width: 0; height: 20px; margin-right: 0; opacity: 0;
+  background: url(../../../public/assets/rays-golden-hour.svg) center / contain no-repeat;
+  transition: width 500ms var(--ease-out), margin-right 500ms var(--ease-out), opacity 500ms var(--ease-out); }
+.name[aria-current='true'] { font-style: italic; }
+.name[aria-current='true']::before { width: 22px; margin-right: var(--space-3); opacity: 1; }
+.name:hover { font-style: italic; }
+
+/* Plates. No opacity, transform or filter on the link itself: its photo and its tag are layered
+   separately in the stage (photo under the light, tag over the scrim). */
+.plate { position: absolute; inset: 0; display: block; visibility: hidden; text-decoration: none; color: var(--ink);
+  -webkit-tap-highlight-color: transparent; }
+.plate.is-current, .plate.is-leaving { visibility: visible; }
+.plate.is-leaving { pointer-events: none; }
+.plate:focus-visible { outline: none; }
+.plate img { position: absolute; inset: 0; z-index: 1; width: 100%; height: 100%; max-width: none; object-fit: cover; }
+.plate.is-current img { z-index: 3; }
+.plate.is-pending img, .plate.is-pending .tag { opacity: 0; }
+
+/* Album name tag: a paper label on the print, so its text never depends on the photograph for contrast */
+.plate .tag { position: absolute; z-index: 6; left: var(--page-pad); right: var(--page-pad); bottom: var(--page-pad);
+  display: grid; gap: var(--space-1); padding: var(--space-3) var(--space-4); background: var(--paper);
+  border-radius: var(--radius-chip); transition: opacity 300ms var(--ease); }
+.plate.is-leaving .tag { opacity: 0; }
+.tag-title { font: 400 var(--fs-h4)/var(--lh-title) var(--font-display); letter-spacing: var(--track-title); }
+.tag-open { font: 500 var(--fs-pill)/1.3 var(--font-body); color: var(--terracotta); text-decoration: underline;
+  text-underline-offset: 3px; text-decoration-thickness: 1px; }
+.plate:hover .tag-open { color: var(--terracotta-deep); }
+.plate:focus-visible .tag { outline: 2px solid var(--honey); outline-offset: 3px; box-shadow: 0 0 0 3px var(--dark); }
+@media (min-width: 768px) {
+  .rail { padding-bottom: calc(var(--page-pad) + var(--space-2)); }
+  .plate .tag { left: auto; width: max-content; max-width: min(420px, 40vw); transform: rotate(-.5deg); }
+}
+
+/* The light the next print comes out of: warm paper-white, with a leak burnt into it */
+.flood { position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0;
+  background: url(../../../public/textures/leak-1.webp) center / cover no-repeat,
+    radial-gradient(130% 110% at 78% 18%, #FFF6E6 0%, #FCE3C0 42%, #F4B27A 100%);
+  background-blend-mode: screen, normal; }
+
+/* Scrims: under the logo (top left) and under the index (bottom left). Never across the faces. */
+.scrim { position: absolute; inset: 0; z-index: 4; pointer-events: none;
+  background:
+    radial-gradient(ellipse 460px 280px at 0 0, rgba(23, 19, 16, .58), transparent 100%),
+    linear-gradient(to top, rgba(23, 19, 16, .86) 0%, rgba(23, 19, 16, .72) 55%, transparent 100%) bottom / 100% 72% no-repeat; }
+@media (min-width: 768px) {
+  .scrim { background:
+    radial-gradient(ellipse 520px 300px at 0 0, rgba(23, 19, 16, .55), transparent 100%),
+    radial-gradient(ellipse 900px 720px at 0 100%, rgba(23, 19, 16, .82) 0%, rgba(23, 19, 16, .7) 58%, transparent 100%); }
+}
+
+/* Light leaks grazing the right and top-right edge. Masked so they cannot reach the middle of the frame;
+   they swell as the scroll nears the next print (--near, 0 at rest to 1 at the hand-over). */
+.edge { position: absolute; inset: 0; z-index: 4; pointer-events: none; mix-blend-mode: screen; opacity: 0;
+  background: center / 100% 100% no-repeat;
+  transition: opacity 900ms var(--ease-out), transform 900ms var(--ease-out); }
+.edge.is-on { opacity: calc(.34 + .6 * var(--near)); }
+.edge-a { background-image: url(../../../public/textures/leak-2.webp);
+  -webkit-mask-image: linear-gradient(to right, transparent 46%, #000 82%);
+  mask-image: linear-gradient(to right, transparent 46%, #000 82%);
+  transform: translate3d(calc(14% - 14% * var(--near)), 0, 0); }
+.edge-b { background-image: url(../../../public/textures/leak-1.webp);
+  -webkit-mask-image: linear-gradient(to left, transparent 46%, #000 82%);
+  mask-image: linear-gradient(to left, transparent 46%, #000 82%);
+  transform: scaleX(-1) translate3d(calc(-16% + 16% * var(--near)), 0, 0); }
+.edge-c { background-image: url(../../../public/textures/leak-3.webp);
+  -webkit-mask-image: radial-gradient(ellipse 70% 60% at 100% 0, #000 30%, transparent 100%);
+  mask-image: radial-gradient(ellipse 70% 60% at 100% 0, #000 30%, transparent 100%);
+  transform: translate3d(calc(8% - 8% * var(--near)), calc(-10% + 10% * var(--near)), 0); }
+
+.stage-note { position: absolute; z-index: 6; left: var(--page-pad); right: var(--page-pad); top: 50%;
+  transform: translateY(-50%); max-width: 30em; margin-inline: auto; padding: var(--space-5);
+  background: var(--paper); color: var(--ink); border-radius: var(--radius-card); }
+.stage-note a { color: var(--terracotta); }
+
+/* ---------- After the plates: a sheet of paper slides over the stage ---------- */
+.paper { position: relative; z-index: 2; margin-top: calc(-1 * var(--radius-panel)); overflow: hidden;
+  background: var(--paper); border-radius: var(--radius-panel) var(--radius-panel) 0 0; }
+.paper .leak { z-index: -1; aspect-ratio: 16 / 10; }
+.leak-intro { top: -6%; right: -14%; width: min(110vw, 1100px); background-image: url(../../../public/textures/leak-2-wash.webp); }
+.paper .leak-enquire { top: 0; right: -10%; width: min(120vw, 1200px); opacity: .4;
+  background-image: url(../../../public/textures/leak-3-wash.webp);
+  -webkit-mask-image: linear-gradient(to right, transparent 20%, #000 70%);
+  mask-image: linear-gradient(to right, transparent 20%, #000 70%); }
+
+.intro { padding-block: var(--section-gap) var(--space-10); }
+.intro h1 { margin-top: var(--space-5); }
+.lede { margin-top: var(--space-6); max-width: 26em; font: 400 var(--fs-lede)/var(--lh-lede) var(--font-display);
+  letter-spacing: var(--track-title); }
+.intro .pill, .rates .pill { margin-top: var(--space-6); }
+em { color: inherit; }
+h1 em, h2 em { color: var(--terracotta); }
+
+.rates { padding-block: var(--space-9); border-top: 1px solid var(--line); }
+.rates dl { margin-top: var(--space-6); display: grid; gap: var(--space-5); }
+.rates dl > div { padding-top: var(--space-4); border-top: 1px solid var(--line); }
+.rates dd { margin-top: var(--space-2); font: 400 var(--fs-h3)/var(--lh-title) var(--font-display);
+  letter-spacing: var(--track-title); }
+@media (min-width: 768px) { .rates dl { grid-template-columns: repeat(3, 1fr); gap: var(--space-6); } }
+
+.enquire { position: relative; padding-block: var(--space-10) var(--section-gap); border-top: 1px solid var(--line); }
+.enquire h2 { margin-top: var(--space-5); max-width: 12em; font-size: var(--fs-chapter); line-height: var(--lh-mega);
+  letter-spacing: var(--track-mega); }
+.enquire p.say { margin-top: var(--space-6); max-width: var(--measure); }
+.enquire .acts { margin-top: var(--space-6); display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-4) var(--space-5); }
+.text-link { color: var(--terracotta); text-underline-offset: 3px; text-decoration-thickness: 1px; overflow-wrap: anywhere; }
+.text-link:hover { color: var(--terracotta-deep); }
+
+.foot { border-top: 1px solid var(--line); padding-block: var(--space-6) var(--space-7);
+  font-size: var(--fs-small); line-height: var(--lh-small); color: var(--ink-quiet); }
+.foot .container { display: flex; flex-wrap: wrap; justify-content: space-between; gap: var(--space-3) var(--space-6); }
+.foot ul { display: flex; flex-wrap: wrap; gap: var(--space-2) var(--space-5); }
+.foot a { display: inline-flex; align-items: center; min-height: var(--tap); }
+</style>
+</head>
+<body>
+
+<a class="skip pill" href="#after">Skip to the introduction</a>
+
+<header class="site-head" id="head">
+  <a class="logo" href="../index.html#/" aria-label="Shawnys Captures, home">
+    <img class="logo-linen" src="../../../public/assets/shawnys-logo-linen.png" alt="" width="1000" height="747">
+    <img class="logo-dark" src="../../../public/assets/shawnys-logo-darkroom.png" alt="" width="1000" height="747">
+  </a>
+  <nav class="tab" aria-label="Main">
+    <ul class="tab-links">
+      <li><a href="../index.html#/weddings">Weddings</a></li>
+      <li><a href="../index.html#/family">Family</a></li>
+      <li><a href="../index.html#/events">Events</a></li>
+      <li><a href="../index.html#/others">Others</a></li>
+      <li class="sep"><a href="../index.html#/rates">Rates</a></li>
+      <li><a href="../index.html#/about">About</a></li>
+    </ul>
+    <button class="pill menu-btn" id="menu-btn" type="button" aria-haspopup="dialog" aria-expanded="false" aria-controls="menu">Menu</button>
+    <a class="pill primary" href="../index.html#/enquire">Enquire</a>
+  </nav>
+</header>
+
+<dialog class="menu grain" id="menu" aria-label="Menu">
+  <span class="leak on-paper" aria-hidden="true"></span>
+  <div class="menu-top">
+    <img src="../../../public/assets/shawnys-logo-darkroom.png" alt="Shawnys Captures" width="1000" height="747">
+    <button class="pill" id="menu-close" type="button">Close</button>
+  </div>
+  <nav aria-label="Menu">
+    <ul class="menu-links">
+      <li><a href="../index.html#/weddings">Weddings</a></li>
+      <li><a href="../index.html#/family">Family</a></li>
+      <li><a href="../index.html#/events">Events</a></li>
+      <li><a href="../index.html#/others">Others</a></li>
+      <li><a href="../index.html#/rates">Rates</a></li>
+      <li><a href="../index.html#/about">About</a></li>
+    </ul>
+  </nav>
+  <a class="pill primary large" href="../index.html#/enquire">Enquire</a>
+</dialog>
+
+<main>
+  <section class="track" id="track" aria-label="Selected albums">
+    <div class="stage" id="stage">
+      <div class="rail">
+        <p class="caption count" id="count" aria-hidden="true">Selected albums</p>
+        <ol class="index" id="index"></ol>
+      </div>
+      <div class="flood" id="flood" aria-hidden="true"></div>
+      <div class="scrim" aria-hidden="true"></div>
+      <div class="edge edge-a is-on" aria-hidden="true"></div>
+      <div class="edge edge-b" aria-hidden="true"></div>
+      <div class="edge edge-c" aria-hidden="true"></div>
+      <p class="stage-note" id="note" hidden>The photographs are taking their time to arrive.
+        <a href="../index.html#/weddings">You can still open the albums here.</a></p>
+      <noscript><p class="stage-note">The photographs need JavaScript to come up.
+        <a href="../index.html#/weddings">You can still open the albums here.</a></p></noscript>
+    </div>
+  </section>
+
+  <div class="paper grain" id="after">
+    <span class="leak on-paper leak-intro" aria-hidden="true"></span>
+
+    <section class="intro container" aria-labelledby="intro-h">
+      <p class="caption">Shawnys Captures · Singapore</p>
+      <h1 id="intro-h">Waiting for <em>good light.</em></h1>
+      <p class="lede">I'm Shawn, a wedding photographer in Singapore. I document the day as it happens, in sneakers,
+        mostly in the background, waiting for the moment the light finds the two of you.</p>
+      <a class="pill" href="../index.html#/about">About me</a>
+    </section>
+
+    <section class="rates container" aria-labelledby="rates-h">
+      <p class="caption">Rates</p>
+      <h2 id="rates-h" class="visually-hidden">Rates, in short</h2>
+      <dl>
+        <div><dt class="caption">Wedding day</dt><dd>from $1,320</dd></div>
+        <div><dt class="caption">Pre-wedding</dt><dd>from $320</dd></div>
+        <div><dt class="caption">Delivery</dt><dd>4 to 6 weeks</dd></div>
+      </dl>
+      <a class="pill" href="../index.html#/rates">See the rates in full</a>
+    </section>
+
+    <section class="enquire container" aria-labelledby="enquire-h">
+      <span class="leak on-paper leak-enquire" aria-hidden="true"></span>
+      <p class="caption">Enquire</p>
+      <h2 id="enquire-h">Tell me about <em>the two of you</em> first.</h2>
+      <p class="say">A few lines about the two of you and the day you have in mind is enough to start.</p>
+      <div class="acts">
+        <a class="pill primary large" href="../index.html#/enquire">Enquire</a>
+        <a class="text-link" data-email href="mailto:shawnys.sim@gmail.com">shawnys.sim@gmail.com</a>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <div class="container">
+        <ul>
+          <li><a class="text-link" data-email href="mailto:shawnys.sim@gmail.com">shawnys.sim@gmail.com</a></li>
+          <li><a class="text-link" data-instagram href="https://www.instagram.com/shawnyssim/" rel="noopener">Instagram</a></li>
+        </ul>
+        <p>© 2026 Shawnys Captures · Singapore</p>
+      </div>
+    </footer>
+  </div>
+</main>
+
+<script type="module">
+const DATA_URL = '../../../data/site.json';
+const ALBUM_BASE = '../index.html#/album/';
+const SEGMENT = 0.85;            // one print per 85% of a screen of scroll (matches the track height in CSS)
+
+const $ = (id) => document.getElementById(id);
+const head = $('head'), track = $('track'), stage = $('stage'), list = $('index'), count = $('count'),
+  flood = $('flood'), note = $('note');
+const edges = [...stage.querySelectorAll('.edge')];
+const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+const clamp = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+const noop = () => {};
+
+let plates = [];                 // { link, img, tag, name }
+let active = -1, token = 0, seg = 1, floodAnim = null, ticking = false;
+
+/* ---------- Phone menu ---------- */
+const menu = $('menu'), menuBtn = $('menu-btn');
+if (menu && menuBtn && typeof menu.showModal === 'function') {
+  menuBtn.addEventListener('click', () => { menu.showModal(); menuBtn.setAttribute('aria-expanded', 'true'); });
+  $('menu-close')?.addEventListener('click', () => menu.close());
+  menu.addEventListener('close', () => { menuBtn.setAttribute('aria-expanded', 'false'); menuBtn.focus(); });
+  menu.addEventListener('click', (e) => { if (e.target.closest('a')) menu.close(); });
+} else if (menuBtn) {
+  menuBtn.addEventListener('click', () => { location.href = '../index.html#/weddings'; });
+}
+
+/* ---------- Data ---------- */
+const photoOf = (a) => a.hero || (Array.isArray(a.featured) && a.featured[0]) || a.cover || null;
+const labelOf = (a) => {
+  const where = a.type && a.venue ? `${a.type} at ${a.venue}` : (a.type || a.venue || '');
+  return where ? `${a.title}, ${where}` : `${a.title}`;
+};
+
+function el(tag, cls, text) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text != null) n.textContent = text;
+  return n;
+}
+
+function build(albums) {
+  track.style.setProperty('--n', albums.length);
+  const frag = document.createDocumentFragment();
+  plates = albums.map((a, i) => {
+    const li = el('li');
+
+    const name = el('button', 'name', a.title);
+    name.type = 'button';
+    name.tabIndex = i === 0 ? 0 : -1;
+    name.setAttribute('aria-label', `Show ${a.title}, ${i + 1} of ${albums.length}`);
+
+    const link = el('a', 'plate');
+    link.href = ALBUM_BASE + encodeURIComponent(a.slug);
+    link.setAttribute('aria-label', labelOf(a));
+
+    const img = el('img');
+    img.alt = '';
+    img.decoding = 'async';
+    img.style.objectPosition = typeof a.focus === 'string' && a.focus ? a.focus : '50% 40%';
+    img.dataset.src = photoOf(a);
+    if (i === 0) { img.fetchPriority = 'high'; img.src = img.dataset.src; }
+    else img.loading = 'lazy';   // its src is only set when the print before it is up (see ensure)
+
+    const tag = el('span', 'tag grain');
+    const meta = [a.type, a.venue].filter(Boolean).join(' · ');
+    if (meta) tag.append(el('span', 'caption', meta));
+    tag.append(el('span', 'tag-title', a.title), el('span', 'tag-open', 'Open the album'));
+
+    link.append(img, tag);
+    li.append(name, link);
+    frag.append(li);
+
+    name.addEventListener('click', () => goTo(i));
+    name.addEventListener('focus', () => { if (i !== active && name.matches(':focus-visible')) goTo(i); });
+    name.addEventListener('keydown', (e) => onNameKey(e, i));
+    return { link, img, tag, name };
+  });
+  list.append(frag);
+}
+
+function ensure(i) {
+  const p = plates[i];
+  if (!p || p.img.getAttribute('src')) return;
+  p.img.loading = 'eager';
+  p.img.src = p.img.dataset.src;
+}
+
+function ready(img) {
+  if (img.complete && img.naturalWidth) return Promise.resolve();
+  const wait = new Promise((res) => setTimeout(res, 3000));     // never hold the light for a photo that won't come
+  const decoded = typeof img.decode === 'function' ? img.decode().catch(noop) : new Promise((res) => {
+    img.addEventListener('load', res, { once: true }); img.addEventListener('error', res, { once: true });
+  });
+  return Promise.race([decoded, wait]);
+}
+
+/* ---------- Bringing a print up ---------- */
+async function show(i, instant) {
+  if (i === active || !plates[i]) return;
+  const prev = plates[active], next = plates[i];
+  const my = ++token;
+  active = i;
+
+  plates.forEach((p, k) => {
+    p.link.classList.remove('is-pending');
+    p.img.getAnimations().forEach((a) => a.cancel());
+    p.tag.getAnimations().forEach((a) => a.cancel());
+    p.link.classList.toggle('is-current', k === i);
+    p.link.classList.toggle('is-leaving', !instant && p === prev);
+    p.name.tabIndex = k === i ? 0 : -1;
+    if (k === i) p.name.setAttribute('aria-current', 'true'); else p.name.removeAttribute('aria-current');
+  });
+  edges.forEach((e, k) => e.classList.toggle('is-on', k === i % edges.length));
+  count.textContent = `Selected albums · ${i + 1} of ${plates.length}` + (i < plates.length - 1 ? ' · scroll for the next' : '');
+  ensure(i); ensure(i + 1);
+
+  if (instant || reduce.matches || typeof flood.animate !== 'function') {
+    if (floodAnim) { floodAnim.cancel(); floodAnim = null; }
+    plates.forEach((p) => p.link.classList.remove('is-leaving'));
+    return;
+  }
+
+  // 1. The light comes up over the print that is leaving.
+  next.link.classList.add('is-pending');
+  const from = floodAnim ? Number(getComputedStyle(flood).opacity) || 0 : 0;
+  if (floodAnim) floodAnim.cancel();
+  const light = floodAnim = flood.animate([{ opacity: from }, { opacity: 1 }],
+    { duration: 520, easing: 'ease-out', fill: 'forwards' });
+  await Promise.all([ready(next.img), light.finished.catch(noop)]);
+  if (my !== token) return;
+
+  // 2. The next one resolves out of it, soft to sharp. Nothing is left on the photo when it ends.
+  next.link.classList.remove('is-pending');
+  const develop = next.img.animate([
+    { opacity: 0, filter: 'blur(28px) brightness(1.25)', transform: 'scale(1.06)' },
+    { opacity: 1, filter: 'blur(7px) brightness(1.08)', offset: 0.5 },
+    { opacity: 1, filter: 'blur(0px) brightness(1)', transform: 'scale(1)' }
+  ], { duration: 1800, easing: 'cubic-bezier(0.4, 0, 0.2, 1)' });
+  next.tag.animate([{ opacity: 0 }, { opacity: 1 }], { duration: 700, delay: 900, easing: 'ease-out', fill: 'backwards' });
+  await develop.finished.catch(noop);
+  if (my !== token) return;
+
+  plates.forEach((p) => p.link.classList.remove('is-leaving'));
+  if (floodAnim === light) { light.cancel(); floodAnim = null; }
+}
+
+/* ---------- Scroll: position picks the print; nothing is hijacked ---------- */
+function measure() {
+  seg = Math.max(1, stage.offsetHeight * SEGMENT);
+  const tallest = plates.reduce((h, p) => Math.max(h, p.tag.offsetHeight), 0);
+  if (tallest) stage.style.setProperty('--tag-h', `${tallest}px`);
+}
+
+function update() {
+  ticking = false;
+  const rect = track.getBoundingClientRect();
+  head.classList.toggle('on-paper', rect.bottom <= 72);
+  if (!plates.length) return;
+  const f = -rect.top / seg;
+  const nearest = Math.round(f);
+  show(clamp(nearest, 0, plates.length - 1), active === -1);
+  const near = !reduce.matches && f > 0 && f < plates.length - 1 ? Math.abs(f - nearest) * 2 : 0;
+  stage.style.setProperty('--near', (near * near).toFixed(3));
+}
+
+function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+
+function goTo(i) {
+  const top = window.scrollY + track.getBoundingClientRect().top + i * seg;
+  window.scrollTo({ top: Math.round(top), behavior: reduce.matches ? 'auto' : 'smooth' });
+}
+
+function onNameKey(e, i) {
+  const last = plates.length - 1;
+  const to = { ArrowDown: i + 1, ArrowRight: i + 1, ArrowUp: i - 1, ArrowLeft: i - 1, Home: 0, End: last }[e.key];
+  if (to == null) return;
+  e.preventDefault();
+  const j = clamp(to, 0, last);
+  plates[j].name.focus({ preventScroll: true });
+  goTo(j);
+}
+
+function fail() {
+  if (note) note.hidden = false;
+  count.hidden = true;
+}
+
+async function init() {
+  window.addEventListener('scroll', onScroll, { passive: true });
+  window.addEventListener('resize', () => { measure(); onScroll(); });
+  update();
+
+  let data = null;
+  try {
+    const res = await fetch(DATA_URL);
+    if (!res.ok) throw new Error(String(res.status));
+    data = await res.json();
+  } catch (err) { fail(); return; }
+
+  const site = data && data.site ? data.site : {};
+  if (typeof site.email === 'string' && site.email.includes('@')) {
+    document.querySelectorAll('[data-email]').forEach((a) => { a.href = `mailto:${site.email}`; a.textContent = site.email; });
+  }
+  if (typeof site.instagram === 'string' && site.instagram.startsWith('https://')) {
+    document.querySelectorAll('[data-instagram]').forEach((a) => { a.href = site.instagram; });
+  }
+
+  const albums = (Array.isArray(data && data.albums) ? data.albums : [])
+    .filter((a) => a && a.selected === true && a.slug && a.title && photoOf(a));
+  if (!albums.length) { fail(); return; }
+
+  build(albums);
+  measure();
+  update();
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => { measure(); onScroll(); }).catch(noop);
+}
+
+init();
+</script>
+</body>
+</html>
