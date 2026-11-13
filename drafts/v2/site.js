@@ -101,10 +101,24 @@ function drawRates() {
       <p class="small quiet">A split day (morning and evening, with a break) adds ${money(pricing.weddingExtras.splitDay)}. Each extra hour is ${money(pricing.weddingExtras.extraHour)}.</p></div>
     <div class="rate"><h2>${esc(pw.label)}</h2><table>${rows(pw.packages, (q) => `, ${q.locations} ${q.locations === '1' ? 'location' : 'locations'}`)}</table>
       <p class="small quiet">Each extra hour is ${money(pw.extraHour)}.</p></div>
+    ${drawBundle()}
     ${ev ? `<div class="rate"><h2>${esc(ev.label)}</h2><table>${rows(ev.packages)}</table>
       <p class="small quiet">Each extra hour is ${money(ev.extraHour)}. Family sessions are quoted to fit: <a class="link" href="#/enquire">ask me</a>.</p></div>` : ''}
     <p class="small quiet">${esc(pricing.delivery.replace('; expedited is', ' for delivery. Expedited delivery is').replace('–', ' to '))}. ${esc(pricing.payment.replace('50% on', 'Half on').replace(', 50%', ', and half'))}.</p>
   </section>`;
+}
+// A wedding day and a pre-wedding together: a percentage off the two. The rows pair the ladders' tiers as examples.
+function drawBundle() {
+  const b = pricing.bundle; if (!b) return '';
+  const wed = (h) => pricing.wedding.find((p) => p.hours === h), pre = (h) => pricing.preWedding.packages.find((p) => p.hours === h);
+  const rows = b.pairs.map(([w, p]) => [wed(w), pre(p)]).filter(([w, p]) => w && p).map(([w, p]) => {
+    const full = w.price + p.price, price = Math.round(full * (100 - b.discount) / 100);
+    return `<tr><th scope="row">${hours(w.hours)} + ${hours(p.hours)}</th>
+      <td>Wedding day and pre-wedding<span class="quiet"> · usually <s>${money(full)}</s>, you save ${money(full - price)}</span></td><td class="price">${money(price)}</td></tr>`;
+  }).join('');
+  return `<div class="rate"><h2>${esc(b.label)}</h2>
+    <p class="rate-lead">Book both and take ${b.discount}% off the two.</p><table>${rows}</table>
+    <p class="small quiet">Any wedding day with any pre-wedding gets the same ${b.discount}% off; these are the usual pairings.</p></div>`;
 }
 const FAQ = [
   ['Is there a limit on how many photographs we get?', 'No. The number on each package is the least you will receive. I keep every photograph that is worth keeping.'],

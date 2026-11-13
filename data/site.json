@@ -158,6 +158,25 @@
       ],
       "extraHour": 250
     },
+    "bundle": {
+     "_note": "A wedding day and a pre-wedding booked together: `discount` percent off the two (Shawn, 2026-11-13). `pairs` are the examples shown, wedding hours with pre-wedding hours; any pairing gets the discount.",
+     "label": "Wedding and pre-wedding together",
+     "discount": 10,
+     "pairs": [
+      [
+       10,
+       5
+      ],
+      [
+       8,
+       3
+      ],
+      [
+       6,
+       1.5
+      ]
+     ]
+    },
     "events": {
    "_note": "Sample ladder for Singapore events (2026-11-12), about $180 an hour on average: $200/h at 2 h down to $170/h at 6 h. To confirm.",
    "label": "Events",
