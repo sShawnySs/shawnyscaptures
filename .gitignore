@@ -8,3 +8,6 @@ data/site.backup.json
 mirror/
 # Vercel CLI link, if one is made locally
 .vercel/
+
+# what Vercel publishes, built from drafts/, data/ and public/ (vercel.json)
+dist/
