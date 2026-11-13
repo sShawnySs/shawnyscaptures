@@ -213,6 +213,25 @@
   },
   "albums": [
     {
+      "slug": "ben-and-gillian",
+      "title": "Ben and Gillian",
+      "category": "weddings",
+      "type": "Wedding",
+      "hero": null,
+      "focus": "50% 40%",
+      "venue": null,
+      "venues": [],
+      "date": null,
+      "count": 0,
+      "selected": false,
+      "story": null,
+      "accentFallback": null,
+      "cover": null,
+      "featured": [],
+      "photos": [],
+      "chapters": []
+    },
+    {
       "slug": "vincent-amanda",
       "title": "Vincent & Amanda",
       "category": "weddings",
