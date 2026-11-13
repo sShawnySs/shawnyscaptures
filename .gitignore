@@ -1,6 +1,7 @@
 .DS_Store
 node_modules/
 .env*
+!.env.example
 data/site.backup.json
 
 # Private: analysis of Shawn's own AI sessions; never pushed or deployed

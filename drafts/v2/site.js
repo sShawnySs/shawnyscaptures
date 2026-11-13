@@ -2,7 +2,7 @@
 //   #/                       the opening photograph, then the tab bar with the first tab open
 //   #/weddings · #/family · #/events · #/others · #/rates · #/faq     the tabs (the page stays put, the tab changes)
 //   #/album/<slug>           an album              #/enquire     the enquiry form
-import { mountHero, mountIntro, trio } from './landing.js';
+import { mountHero, mountIntro, trio, sized } from './landing.js';
 import { mountLight } from './light.js';
 
 const $ = (s, el = document) => el.querySelector(s);
@@ -71,7 +71,7 @@ function drawCategory(cat) {
   const list = albums.filter((a) => a.category === cat.slug);
   const types = [...new Set(list.map((a) => a.type))];
   const tile = (a) => `<a class="tile wide" href="#/album/${esc(a.slug)}" data-slug="${esc(a.slug)}">
-      <img src="${esc(a.hero || a.cover)}" alt="" loading="lazy" decoding="async">
+      <img src="${esc(sized(a.hero || a.cover, 900))}" alt="" loading="lazy" decoding="async">
       <span class="tile-cap"><b>${esc(a.title)}</b></span></a>`;
   if (!list.length) return `<section class="container bleed tab-body"><div class="empty">
       <div class="box print ${printFor(cat.slug)}" aria-hidden="true"></div>
@@ -142,7 +142,7 @@ function drawReviews() {
     <h2 class="group-head" id="reviewsHead"><span>Kind words</span></h2>
     <div class="review-list">${list.map((r, i) => `<figure class="review">
       <blockquote><p>“${esc(r.quote)}”</p></blockquote>
-      <figcaption><span class="review-pic box${r.image ? '' : ' print ' + PRINTS[i % PRINTS.length]}">${r.image ? `<img src="${esc(r.image)}" alt="" loading="lazy">` : ''}</span>
+      <figcaption><span class="review-pic box${r.image ? '' : ' print ' + PRINTS[i % PRINTS.length]}">${r.image ? `<img src="${esc(sized(r.image, 160))}" alt="" loading="lazy">` : ''}</span>
         <span><b>${esc(r.who || '')}</b>${r.context ? `<span>${esc(r.context)}</span>` : ''}</span></figcaption>
       ${r.full ? `<details><summary>Read the whole review</summary><div class="review-full">${para(r.full)}</div></details>` : ''}
     </figure>`).join('')}</div></section>`;
@@ -158,15 +158,15 @@ function drawAlbum(a) {
   const cat = categories.find((c) => c.slug === a.category);
   content.innerHTML = `<article class="container bleed album">
     <a class="back" href="#/${esc(cat.slug)}" data-cursor="back">${BACK} ${esc(cat.label)}</a>
-    <header class="cover box"><img src="${esc(a.hero || a.cover)}" alt="" style="object-position:${esc(a.focus || '50% 50%')}">
+    <header class="cover box"><img src="${esc(sized(a.hero || a.cover, 2400))}" alt="" style="object-position:${esc(a.focus || '50% 50%')}">
       <div class="cover-cap"><h1>${esc(a.title)}</h1>
         <p>${esc([a.type, a.venue, a.date, photoCount(a) + ' photographs'].filter(Boolean).join(' · '))}</p></div></header>
     ${a.story ? `<p class="story">${esc(a.story)}</p>` : ''}
     ${full ? '' : `<p class="note small quiet">Draft: only ${photos.length} of this album's ${a.count} photographs are in so far.</p>`}
     ${chapters.map((c) => `<section class="scene">${c.title ? `<h2 class="group-head"><span>${esc(c.title)}</span></h2>` : ''}
       <div class="rows">${photos.slice(c.start, c.end).map((p, k) => `<button type="button" class="ph" data-cursor="view" data-i="${c.start + k}" aria-label="Open photograph ${c.start + k + 1} of ${photos.length}">
-        <img src="${esc(p)}" alt="" loading="lazy" decoding="async"></button>`).join('')}</div></section>`).join('')}
-    ${next && next !== a ? `<a class="next box" href="#/album/${esc(next.slug)}"><img src="${esc(next.cover)}" alt="" loading="lazy">
+        <img src="${esc(sized(p, 1000))}" alt="" loading="lazy" decoding="async"></button>`).join('')}</div></section>`).join('')}
+    ${next && next !== a ? `<a class="next box" href="#/album/${esc(next.slug)}"><img src="${esc(sized(next.cover, 300))}" alt="" loading="lazy">
       <span><span class="small quiet">Next album</span><b>${esc(next.title)}</b></span>${ARROW}</a>` : ''}
   </article>`;
   shape();
@@ -216,11 +216,11 @@ function drawEnquire() {
 const viewer = $('#viewer'), vImg = $('#vImg'); let vList = [], vI = 0, vAlbum = null, vFrom = null;
 function openViewer(list, i, a, from) { vList = list; vI = i; vAlbum = a; vFrom = from; show(); viewer.classList.add('open'); document.body.classList.add('locked'); $('#vClose').focus(); }
 function show() {
-  viewer.classList.add('wait'); vImg.style.opacity = 0; const src = vList[vI]; const tmp = new Image();
-  tmp.onload = () => { if (vList[vI] === src) { vImg.src = src; vImg.style.opacity = 1; viewer.classList.remove('wait'); } };
-  tmp.onerror = () => { if (vList[vI] === src) { viewer.classList.remove('wait'); $('#vCount').textContent = `${vI + 1} / ${vList.length} · this photograph did not load`; } }; tmp.src = src;
+  viewer.classList.add('wait'); vImg.style.opacity = 0; const raw = vList[vI], src = sized(raw, 2400); const tmp = new Image();
+  tmp.onload = () => { if (vList[vI] === raw) { vImg.src = src; vImg.style.opacity = 1; viewer.classList.remove('wait'); } };
+  tmp.onerror = () => { if (vList[vI] === raw) { viewer.classList.remove('wait'); $('#vCount').textContent = `${vI + 1} / ${vList.length} · this photograph did not load`; } }; tmp.src = src;
   vImg.alt = `${vAlbum.title}, photograph ${vI + 1} of ${vList.length}`; $('#vTitle').textContent = vAlbum.title; $('#vCount').textContent = `${vI + 1} / ${vList.length}`;
-  [vList[vI + 1], vList[vI - 1]].forEach((s) => { if (s) new Image().src = s; });
+  [vList[vI + 1], vList[vI - 1]].forEach((s) => { if (s) new Image().src = sized(s, 2400); });
 }
 const step = (d) => { vI = (vI + d + vList.length) % vList.length; show(); };
 const closeViewer = () => { viewer.classList.remove('open'); document.body.classList.remove('locked'); vFrom?.focus?.(); };
@@ -313,7 +313,7 @@ function slideshow(tile) {
   if (srcs.length < 2) return;
   let layer = null, ticks = [], i = 0, timer = 0;
   const build = () => {
-    tile.insertAdjacentHTML('beforeend', `<span class="tile-slides" aria-hidden="true">${srcs.slice(1).map((src) => `<img alt="" src="${esc(src)}" decoding="async">`).join('')}</span>
+    tile.insertAdjacentHTML('beforeend', `<span class="tile-slides" aria-hidden="true">${srcs.slice(1).map((src) => `<img alt="" src="${esc(sized(src, 900))}" decoding="async">`).join('')}</span>
       <span class="tile-ticks" aria-hidden="true">${srcs.map((_, k) => `<i${k ? '' : ' class="on"'}></i>`).join('')}</span>`);
     layer = [null, ...tile.querySelectorAll('.tile-slides img')]; ticks = [...tile.querySelectorAll('.tile-ticks i')];
   };

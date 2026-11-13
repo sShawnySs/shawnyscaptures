@@ -9,7 +9,7 @@ https://shawnyscaptures.myportfolio.com/. Sibling of the design portfolio at
   which stays the source of truth; change both together.
 - `docs/SITE-AUDIT.md`: crawl of the old site (IA, prices, FAQ, form fields, problems, proposed IA).
 - `data/site.json`: albums (cover, featured, photos, chapters, old URL for redirects), pricing, contact.
-  Photo URLs are stand-ins on the old site's CDN until the photos are re-exported to Cloudinary;
+  Photo URLs are stand-ins on the old site's CDN until the photos are uploaded to Cloudinary (see below);
   `null` means still to write or confirm.
 - `public/assets/`: logo in its three approved inks, the three rays.
 - `drafts/v2/`: **draft v0.3 (2026-11-11)**, the current one. One page on hash routes: `#/` opens on a page
@@ -52,6 +52,12 @@ https://shawnyscaptures.myportfolio.com/. Sibling of the design portfolio at
 - The same from the command line: `node scripts/albums.mjs list | add | photos <slug> --photos <folder> |
   remove <slug> | landing <slug> on|off | move <slug> <position>` (the options are at the top of the script).
 - Each change backs up the previous file to `data/site.backup.json`.
+- Photos live on **Cloudinary** (free plan, chosen 2026-11-13). Copy `.env.example` to `.env` and paste the
+  `CLOUDINARY_URL` from the Cloudinary dashboard (private: git and Vercel ignore it). From then on `add` and `photos`
+  upload to the folder `shawnys/<slug>` and store the Cloudinary addresses; `node scripts/albums.mjs cloud [<slug>]`
+  copies what is already in `site.json` (the old site's stand-ins included). Code: `scripts/cloudinary.mjs`, no
+  dependencies. The site asks Cloudinary for each photo at the width it is shown (`sized()` in `landing.js`:
+  `f_auto,q_auto,c_limit,w_N`); other addresses pass through unchanged.
 - Categories are `weddings`, `family`, `events`, `others` (`categories` in `site.json`); `type` is the finer
   label shown on the album (Wedding, Pre-wedding, Solemnisation, Maternity, ...).
 

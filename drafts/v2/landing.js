@@ -13,6 +13,11 @@ const PLAY = '<svg class="ic" viewBox="0 0 16 16" aria-hidden="true"><path d="M5
 const HOLD = 6500;        // ms each full-screen photograph stays up
 const HOLD_PAGE = 12000;  // ms each opening page stays up before any scrolling (about 4 s of that is the fade)
 
+// A Cloudinary photo at the width it is shown, in the best format and quality the browser takes (f_auto, q_auto); the
+// free plan counts each new size once. Addresses that are not on Cloudinary pass through unchanged.
+export const sized = (url, w) => (/^https:\/\/res\.cloudinary\.com\/[^/]+\/image\/upload\//.test(url || '')
+  ? url.replace('/image/upload/', `/image/upload/f_auto,q_auto,c_limit,w_${w}/`) : url);
+
 // the three opening photographs of an album: left, middle, right
 export const trio = (a) => a.trio?.length === 3 ? a.trio : [a.cover, a.hero || a.featured[0] || a.cover, a.featured[1] || a.cover];
 
@@ -20,7 +25,7 @@ export function mountHero(el, albums, onChange = () => {}) {
   const list = albums.filter((a) => a.selected && (a.hero || a.featured[0] || a.cover));
   if (!list.length) { el.hidden = true; return { setActive() {}, list }; }
   const meta = (a) => [a.type, a.venue].filter(Boolean).join(' · ');
-  const src = (a) => trio(a)[1];
+  const src = (a) => sized(trio(a)[1], 2400);
   el.insertAdjacentHTML('beforeend', `
     <div class="slides">${list.map((a, i) => `<a class="slide${i ? '' : ' on'}" href="#/album/${esc(a.slug)}" ${i ? 'tabindex="-1" aria-hidden="true"' : ''}
       aria-label="${esc(a.title)}, ${esc(meta(a))}: open the album">
@@ -76,7 +81,7 @@ const logo = (ink) => `<img class="intro-logo" src="../../public/assets/shawnys-
 // One page per landing album, laid out like a page of a photobook: the logo, three photographs, one line.
 // `.cell.mid` is the photograph that grows. The layout class is added once the photographs' shapes are known.
 function page(a) {
-  const t = trio(a), img = (src) => `<img alt="" src="${esc(src)}" decoding="async">`;
+  const t = trio(a), img = (src) => `<img alt="" src="${esc(sized(src, 900))}" decoding="async">`;
   // A hairline frame round the photographs: the logo sits in the gap of its top edge, the line in the gap of its foot.
   return `<div class="page"><div class="spread"><div class="frame">
       <div class="fr-edge top"><i></i>${logo('darkroom')}<i></i></div>

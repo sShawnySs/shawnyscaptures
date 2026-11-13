@@ -10,6 +10,12 @@
 //   node scripts/albums.mjs remove <slug>
 //   node scripts/albums.mjs landing <slug> on|off     show or hide it on the landing page
 //   node scripts/albums.mjs move <slug> <position>    1 = first
+//   node scripts/albums.mjs cloud [<slug>]            copy an album's photos (or every album's) to Cloudinary
+//
+// Photos and Cloudinary: once .env holds your CLOUDINARY_URL (see scripts/cloudinary.mjs), photos added with `add` or
+// `photos` are uploaded there and the album keeps their Cloudinary addresses. Without it they stay as given (a
+// project folder or web addresses). `cloud` moves what is already in data/site.json, including the stand-ins still
+// on the old site's servers.
 //
 // Every change first copies the current file to data/site.backup.json, so the last change can be undone
 // with: cp data/site.backup.json data/site.json
@@ -18,6 +24,7 @@ import { createServer } from 'node:http';
 import { dirname, join, relative, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { exec } from 'node:child_process';
+import { cloudConfig, toCloud, isCloud } from './cloudinary.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const FILE = join(ROOT, 'data', 'site.json');
@@ -29,6 +36,10 @@ const save = (d) => { copyFileSync(FILE, BACKUP); writeFileSync(FILE, JSON.strin
 const slugify = (s) => s.normalize('NFKD').replace(/[\u0300-\u036f]/g, '').toLowerCase()
   .replace(/&/g, ' ').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 const fail = (m) => { throw new Error(m); };
+const CLOUD = cloudConfig(ROOT);
+const say = (m) => console.log(m);
+/** With Cloudinary set up, upload the photos and use their addresses; without it, keep them as they are. */
+const upload = (list, slug) => (CLOUD ? toCloud(CLOUD, ROOT, list, slug, say) : list);
 
 /** A folder inside the project (photos sorted by name), a .txt of URLs, or a list of URLs/paths. */
 function readPhotos(src) {
@@ -44,7 +55,7 @@ function readPhotos(src) {
   return readPhotos(String(src).split(/[\n,]/));
 }
 
-function add(d, o) {
+async function add(d, o) {
   const title = (o.title || '').trim() || fail('An album needs a title.');
   const category = o.category || 'weddings';
   d.categories.some((c) => c.slug === category)
@@ -52,7 +63,7 @@ function add(d, o) {
   let slug = slugify(o.slug || title) || fail('Could not make a web address from that title.');
   if (d.albums.some((a) => a.slug === slug)) slug += '-' + slugify(o.type || category);
   d.albums.some((a) => a.slug === slug) && fail(`An album called "${slug}" already exists.`);
-  const photos = readPhotos(o.photos);
+  const photos = await upload(readPhotos(o.photos), slug);
   const venues = (o.venue || '').split(/\s*[;,]\s*/).filter(Boolean);
   const cover = o.cover || photos[0] || null;
   const album = {
@@ -71,11 +82,12 @@ function add(d, o) {
 }
 const find = (d, slug) => d.albums.find((a) => a.slug === slug) || fail(`No album called "${slug}".`);
 /** Add photos to an album that already exists (or, with replace, swap its whole set). Photos already in it are skipped. */
-function addPhotos(d, slug, src, replace) {
-  const a = find(d, slug); const incoming = readPhotos(src);
+async function addPhotos(d, slug, src, replace) {
+  const a = find(d, slug); let incoming = readPhotos(src);
   const bad = incoming.find((p) => !/^https?:\/\//.test(p) && !existsSync(join(ROOT, p)));
   bad && fail(`"${bad}" is not a web address, and there is no folder or file with that name in the project.`);
   incoming.length || fail('No photos found. Give a folder inside the project, or one photo address per line.');
+  incoming = await upload(incoming, a.slug);
   const before = replace ? [] : a.photos;
   const fresh = [...new Set(incoming)].filter((p) => !before.includes(p));
   if (replace) a.chapters = [];
@@ -83,6 +95,20 @@ function addPhotos(d, slug, src, replace) {
   if (!a.cover) a.cover = a.photos[0];
   if (!a.featured?.length) a.featured = a.photos.filter((p) => p !== a.cover).slice(0, 2);
   return { album: a, added: fresh.length };
+}
+/** Copy an album's photos to Cloudinary: every photo field (cover, hero, trio, featured, photos) gets the new address. */
+async function cloud(d, slug) {
+  CLOUD || fail('Cloudinary is not set up yet: copy .env.example to .env and paste your CLOUDINARY_URL into it.');
+  const a = find(d, slug);
+  const all = [...new Set([a.cover, a.hero, ...(a.trio || []), ...(a.featured || []), ...a.photos].filter((p) => p && !isCloud(p)))];
+  if (!all.length) return { album: a, moved: 0 };
+  say(`${a.title}: ${all.length} photos to copy`);
+  const moved = await toCloud(CLOUD, ROOT, all, a.slug, say);
+  const map = new Map(all.map((p, i) => [p, moved[i]])), swap = (p) => map.get(p) || p;
+  a.cover = swap(a.cover); a.hero = swap(a.hero);
+  if (a.trio) a.trio = a.trio.map(swap);
+  a.featured = (a.featured || []).map(swap); a.photos = a.photos.map(swap);
+  return { album: a, moved: all.length };
 }
 const remove = (d, slug) => { const a = find(d, slug); d.albums = d.albums.filter((x) => x !== a); return a; };
 const landing = (d, slug, on) => { const a = find(d, slug); a.selected = on; return a; };
@@ -107,11 +133,17 @@ try {
       console.log(`${String(i + 1).padStart(2)}  ${a.selected ? '●' : '○'}  ${a.slug.padEnd(28)} ${a.category.padEnd(9)} ${a.type.padEnd(14)} ${a.photos.length || a.count} photos`);
     }
     console.log('\n● = on the landing page');
-  } else if (cmd === 'add') { const a = add(d, flags); save(d); console.log(`Added "${a.title}" as ${a.slug} (${a.photos.length} photos).`); }
-  else if (cmd === 'photos') { const r = addPhotos(d, args[0], flags.photos, !!flags.replace); save(d); console.log(`${r.album.title}: ${r.added} added, ${r.album.photos.length} photos in all.`); }
+  } else if (cmd === 'add') { const a = await add(d, flags); save(d); console.log(`Added "${a.title}" as ${a.slug} (${a.photos.length} photos).`); }
+  else if (cmd === 'photos') { const r = await addPhotos(d, args[0], flags.photos, !!flags.replace); save(d); console.log(`${r.album.title}: ${r.added} added, ${r.album.photos.length} photos in all.`); }
   else if (cmd === 'remove') { const a = remove(d, args[0]); save(d); console.log(`Removed "${a.title}". Undo: cp data/site.backup.json data/site.json`); }
   else if (cmd === 'landing') { const a = landing(d, args[0], args[1] !== 'off'); save(d); console.log(`${a.title}: ${a.selected ? 'on' : 'off'} the landing page.`); }
   else if (cmd === 'move') { const a = move(d, args[0], Number(args[1]) || 1); save(d); console.log(`Moved "${a.title}" to position ${d.albums.indexOf(a) + 1}.`); }
+  else if (cmd === 'cloud') {
+    // one album at a time, saving after each, so a stop halfway keeps what was already copied
+    for (const a of args[0] ? [find(d, args[0])] : [...d.albums]) {
+      const r = await cloud(d, a.slug); save(d); say(r.moved ? `${r.album.title}: copied ${r.moved}.` : `${r.album.title}: already on Cloudinary.`);
+    }
+  }
   else if (!cmd || cmd === 'admin') serve();
   else fail(`Unknown command "${cmd}". Open this file to see the commands.`);
 } catch (e) { console.error(e.message); process.exit(1); }
@@ -129,12 +161,12 @@ function serve() {
       if (req.headers['content-type'] !== 'application/json') return json(res, 415, { error: 'JSON only.' });
       let body = '';
       req.on('data', (c) => { body += c; if (body.length > 2e6) req.destroy(); });
-      req.on('end', () => {
+      req.on('end', async () => {
         try {
           const { action, slug, ...o } = JSON.parse(body); const d = load();
           let note = null;
-          if (action === 'add') add(d, o);
-          else if (action === 'photos') { const r = addPhotos(d, slug, o.photos, !!o.replace); note = `${r.album.title}: ${r.added} added, ${r.album.photos.length} photos in all.`; }
+          if (action === 'add') await add(d, o);
+          else if (action === 'photos') { const r = await addPhotos(d, slug, o.photos, !!o.replace); note = `${r.album.title}: ${r.added} added, ${r.album.photos.length} photos in all.`; }
           else if (action === 'remove') remove(d, slug);
           else if (action === 'landing') landing(d, slug, !!o.on);
           else if (action === 'move') move(d, slug, o.position);
