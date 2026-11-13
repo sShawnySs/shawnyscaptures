@@ -1,5 +1,5 @@
 {
-  "_about": "Album data for the Shawnys Captures site. Photo URLs point at the current Adobe Portfolio CDN (cdn.myportfolio.com) as stand-ins; replace with Cloudinary when the photos are re-exported. null = still to write or confirm. chapters use photo indexes [start,end). categories drive the nav and the category pages; each album has one category (its type stays as the finer label). hero = the photo used full-screen on the landing (falls back to featured[0], then cover); focus = CSS object-position for crops. `trio` on a landing album is its three opening photographs: left, middle (the one that grows to full screen), right. `layout` is that album's opening page: `row` (three photographs), `solo` (one photograph), `inset` (one photograph laid on a full-page one, `ground`, at `insetAt` percent from the left and top; pick a ground with open space and keep the photograph off its subjects) or `split` (one photograph across a white and a black half). Give neighbouring landing albums different layouts so the page changes shape as it swaps.",
+  "_about": "Album data for the Shawnys Captures site. Photo URLs point at the current Adobe Portfolio CDN (cdn.myportfolio.com) as stand-ins; replace with Cloudinary when the photos are re-exported. null = still to write or confirm. chapters use photo indexes [start,end). categories drive the nav and the category pages; each album has one category (its type stays as the finer label). hero = the photo used full-screen on the landing (falls back to featured[0], then cover); focus = CSS object-position for crops. `trio` on a landing album is its three opening photographs: left, middle (the one that grows to full screen), right. The opening page is laid out from the shape of an album's `trio`: mostly landscape photographs stack in a column, mostly upright ones sit in a row. Set `layout` to `column` or `row` on an album to force one.",
   "site": {
     "name": "Shawnys Captures",
     "email": "shawnys.sim@gmail.com",
@@ -29,31 +29,81 @@
     }
   ],
   "about": {
-    "_note": "The small section under the tab bar. One entry per tab; `image` is a photo of Shawn (null shows a print until one is added).",
+    "_note": "The about section under the tab bar: Shawn's portrait, the greeting “Hello, I’m Shawn!”, then the tab's words. Each entry in `messages` is a short paragraph; [words](address) makes a link. Written from Shawn's answers (2026-11-12/13). `image`: the one photo of Shawn, used on every tab.",
+    "image": "../../public/photos/about/portrait.webp",
     "weddings": {
-      "text": "I'm Shawn, a wedding photographer. Moments before poses, and people before the shot list.",
-      "image": null
+      "messages": [
+        "I’ve loved photography for over 15 years, and shot weddings for the last three, including as part of the senior team at [iki](https://www.helloikicompany.com/).",
+        "When I’m not behind a camera, I’m a [designer](https://shawn-sim-designs.vercel.app/). And I’m planning my own wedding too, so I know how much there is to think about.",
+        "On the day I’m the one in sneakers, blending in and documenting moments, not poses. You’re not just hiring a vendor; you’re gaining a friend.",
+        "If that speaks to you, [tell me about your day](#/enquire). We can meet for a coffee or a call first, no strings attached, and see if we’re a good fit."
+      ]
     },
     "family": {
-      "text": "Small groups, no stiff poses. I'm an introvert, which helps: people forget I'm there.",
-      "image": null
+      "messages": [
+        "Photography has been my hobby for over 15 years, and my work for three.",
+        "With families I keep it simple: a few easy directions, then I step back. I look for soft greens, golden light and room to breathe.",
+        "Mostly, I want you to look like yourselves."
+      ]
     },
     "events": {
-      "text": "I wait for it rather than force it: the laugh in the speeches, a glance across the room.",
-      "image": null
+      "messages": [
+        "By day I’m an event executive at Experience Matters, on the digital, interactive side of live events.",
+        "So I know how a run sheet works, and which moments matter to the organiser. I’ll be where I need to be, and out of the way when I’m not."
+      ]
     },
     "others": {
-      "text": "Doesn't fit a category? Tell me the idea and I'll put something together.",
-      "image": null
+      "messages": [
+        "More than 30 shoots in, I still like the ideas that don’t fit a box.",
+        "Tell me what you have in mind, and we’ll work it out together."
+      ]
     },
     "rates": {
-      "text": "Plain prices, in Singapore dollars. Half on confirmation, half a week after the shoot.",
-      "image": null
+      "messages": [
+        "Plain prices, in Singapore dollars.",
+        "Half on confirmation, half a week after the shoot."
+      ]
     },
     "faq": {
-      "text": "The things couples usually ask. Anything else, ask me.",
-      "image": null
+      "messages": [
+        "The things people usually ask me.",
+        "If yours isn’t here, just ask."
+      ]
     }
+  },
+  "closing": {
+    "_note": "The dark card at the foot of every page except the form. `heading` and `default` everywhere; a page's entry replaces the line, and an object ({heading, text}) replaces both.",
+    "heading": "Have a date? Tell me where and when.",
+    "default": "Tell me the date, the place and what you have in mind. I’ll come back with how I’d photograph it.",
+    "weddings": "Tell me the date, the venue and a little about the two of you. We meet before you book, so you know who’ll be following you around.",
+    "family": "Tell me who’s coming and where you’d like to be. I’ll suggest a time with good light.",
+    "events": "Send me the run sheet, or just the date and the venue, and I’ll come back with a quote that fits.",
+    "others": "Tell me the idea, however rough. I’ll come back with how I’d shoot it and what it would cost.",
+    "rates": {
+      "heading": "No package that fits your plans? I’m flexible, and happy to tailor one to your occasion.",
+      "text": "Longer day, two venues, a smaller budget? Tell me what you need and I’ll quote to fit."
+    },
+    "faq": "Still have a question, or a day that doesn’t fit these packages? Ask me directly.",
+    "album": "Like what you see here? Tell me about your day and I’ll tell you how I’d photograph it."
+  },
+  "reviews": {
+    "_note": "Kind words from clients, shown on the Weddings and Rates tabs. `quote` is the short pull-out, `full` the whole review as written (the client's words, kept as they are). `who` names them; `image` is a small photo from their shoot (null shows a print until one is added).",
+    "items": [
+      {
+        "quote": "We found Shawn at the last minute after our original photographer had to cancel about a week before the wedding. Shawn agreed to take us on immediately.",
+        "full": "We found Shawn at the last minute after our original photographer had to cancel about a week before the wedding. We were quite stressed, but Shawn agreed to take us on immediately and even arranged a Zoom call a few days before the wedding to get to know us and understand our preferences. That alone already gave us a lot of reassurance.\n\nOn the actual day, Shawn was very professional and patient. He gave clear, easy directions when it came to posing, which helped a lot since we don’t have as much experience posing in front of a camera. At the same time, he was able to capture many natural and candid shots of us throughout the evening. The whole photo-taking process went very smoothly under his direction.\n\nWhen the photos were released, they were beautifully presented on Pic-Time. Shawn also went the extra mile to help us edit and touch up a few photos upon request, which we really appreciate. Overall, we are very grateful to have had Shawn as our wedding photographer, and would definitely recommend him as someone reliable and easy to work with.",
+        "who": "Ben & Gillian",
+        "context": null,
+        "image": null
+      },
+      {
+        "quote": "Very professional and friendly! He gave me great direction and pointers for posing as it was my first time ever doing a shoot!",
+        "full": null,
+        "who": "Timothy & Grace",
+        "context": null,
+        "image": null
+      }
+    ]
   },
   "pricing": {
     "currency": "SGD",
@@ -108,7 +158,18 @@
       ],
       "extraHour": 250
     },
-    "delivery": "4–6 weeks; expedited is 1 week",
+    "events": {
+   "_note": "Sample ladder for Singapore events (2026-11-12), about $180 an hour on average: $200/h at 2 h down to $170/h at 6 h. To confirm.",
+   "label": "Events",
+   "packages": [
+    { "hours": 6, "minImages": 240, "price": 1020, "expedited": 200 },
+    { "hours": 4, "minImages": 160, "price": 720, "expedited": 150 },
+    { "hours": 3, "minImages": 120, "price": 560, "expedited": 120 },
+    { "hours": 2, "minImages": 80, "price": 400, "expedited": 100 }
+   ],
+   "extraHour": 180
+  },
+  "delivery": "4–6 weeks; expedited is 1 week",
     "payment": "50% on confirmation, 50% one week after the shoot"
   },
   "albums": [
@@ -141,8 +202,7 @@
         "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/bc015ab8-723c-4eb7-950b-5fbafa50b5af_rwc_390x0x3069x2400x3069.jpg?h=b27efb728721b937acfd57a3c874db16",
         "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/0895c0de-ed28-4409-8e08-e8bb79a552ac_rw_1920.jpg?h=554afc9fb1a8e199dc11b0c347cab25c",
         "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/825ba910-90da-4249-a3fe-718c47220a67_rw_1920.jpg?h=8a0e6eb22ab3c1a18490b841a2ace36a"
-      ],
-      "layout": "row"
+      ]
     },
     {
       "slug": "clarence-daraelle",
@@ -222,21 +282,9 @@
       "oldUrl": "/clarence-daraelle",
       "trio": [
         "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/f60697ac-0344-4492-a4cb-7a4292bb0caa_rwc_540x0x2762x2160x2762.jpg?h=12d8f314dc32b92a2fc89ab42c6f8d18",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/32402949-20cc-416f-a38e-674d38dffd26_rw_1920.jpg?h=c08a4993002126d8d877c5e0b919bd61",
+        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/15d33a42-b4a7-48c7-9806-9d0624356804_rw_1920.jpg?h=a6244be147ad69abcaf866d1ac744dbc",
         "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/6c44c57f-dfae-497b-bc02-7542bea3deee_rw_1920.jpg?h=b149ba2c41468861eebb99158371d605"
-      ],
-      "ground": "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/15d33a42-b4a7-48c7-9806-9d0624356804_rw_1920.jpg?h=a6244be147ad69abcaf866d1ac744dbc",
-      "layout": "inset",
-      "insetAt": {
-        "phone": [
-          50,
-          26
-        ],
-        "wide": [
-          77,
-          46
-        ]
-      }
+      ]
     },
     {
       "slug": "daniel-and-dawn",
@@ -268,8 +316,7 @@
         "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/5719067a-34bd-403a-b478-cdb7d06aaadc_rwc_870x0x2105x1646x2105.jpg?h=452ae64912e5123f8adfd622a335b6f4",
         "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/5806fc30-8c49-4659-9cb7-cbd3e4acf714_rw_1920.jpg?h=079c9277e8be34b14136b72853109deb",
         "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/8b62b44b-d587-4d01-a38f-383705146c5b_rw_1920.jpg?h=3a13e48b55fc1f7c0e00b5ff4cc40d10"
-      ],
-      "layout": "split"
+      ]
     },
     {
       "slug": "brinston-chrestella",
@@ -300,8 +347,7 @@
         "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/44398f6f-5180-47a6-b35c-bd320df680a6_rwc_540x0x2762x2160x2762.jpg?h=140b05c0c47372df7c4d545c0f683330",
         "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/554f97af-e90c-48d8-860c-521407919cc5_rw_1920.jpg?h=0152256e9b04627bdd9c80802a1a75c5",
         "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/46164643-92b7-473d-8c3d-2817a472bb3e_rw_1920.jpg?h=0a8cdddc6d0b7116dfc9eb0bb302d013"
-      ],
-      "layout": "solo"
+      ]
     },
     {
       "slug": "john-xin-yi",

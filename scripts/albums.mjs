@@ -5,6 +5,8 @@
 //   node scripts/albums.mjs list
 //   node scripts/albums.mjs add --title "Ana & Ben" --category weddings --type Wedding \
 //        --venue "Fort Canning Park" --photos public/photos/ana-ben        (a folder, or a .txt of URLs)
+//   node scripts/albums.mjs photos <slug> --photos public/photos/ana-ben-more   add photos to an album
+//        (add --replace to swap the whole set instead of adding to it)
 //   node scripts/albums.mjs remove <slug>
 //   node scripts/albums.mjs landing <slug> on|off     show or hide it on the landing page
 //   node scripts/albums.mjs move <slug> <position>    1 = first
@@ -68,6 +70,20 @@ function add(d, o) {
   return album;
 }
 const find = (d, slug) => d.albums.find((a) => a.slug === slug) || fail(`No album called "${slug}".`);
+/** Add photos to an album that already exists (or, with replace, swap its whole set). Photos already in it are skipped. */
+function addPhotos(d, slug, src, replace) {
+  const a = find(d, slug); const incoming = readPhotos(src);
+  const bad = incoming.find((p) => !/^https?:\/\//.test(p) && !existsSync(join(ROOT, p)));
+  bad && fail(`"${bad}" is not a web address, and there is no folder or file with that name in the project.`);
+  incoming.length || fail('No photos found. Give a folder inside the project, or one photo address per line.');
+  const before = replace ? [] : a.photos;
+  const fresh = [...new Set(incoming)].filter((p) => !before.includes(p));
+  if (replace) a.chapters = [];
+  a.photos = [...before, ...fresh]; a.count = a.photos.length;
+  if (!a.cover) a.cover = a.photos[0];
+  if (!a.featured?.length) a.featured = a.photos.filter((p) => p !== a.cover).slice(0, 2);
+  return { album: a, added: fresh.length };
+}
 const remove = (d, slug) => { const a = find(d, slug); d.albums = d.albums.filter((x) => x !== a); return a; };
 const landing = (d, slug, on) => { const a = find(d, slug); a.selected = on; return a; };
 function move(d, slug, pos) {
@@ -92,6 +108,7 @@ try {
     }
     console.log('\n● = on the landing page');
   } else if (cmd === 'add') { const a = add(d, flags); save(d); console.log(`Added "${a.title}" as ${a.slug} (${a.photos.length} photos).`); }
+  else if (cmd === 'photos') { const r = addPhotos(d, args[0], flags.photos, !!flags.replace); save(d); console.log(`${r.album.title}: ${r.added} added, ${r.album.photos.length} photos in all.`); }
   else if (cmd === 'remove') { const a = remove(d, args[0]); save(d); console.log(`Removed "${a.title}". Undo: cp data/site.backup.json data/site.json`); }
   else if (cmd === 'landing') { const a = landing(d, args[0], args[1] !== 'off'); save(d); console.log(`${a.title}: ${a.selected ? 'on' : 'off'} the landing page.`); }
   else if (cmd === 'move') { const a = move(d, args[0], Number(args[1]) || 1); save(d); console.log(`Moved "${a.title}" to position ${d.albums.indexOf(a) + 1}.`); }
@@ -115,12 +132,14 @@ function serve() {
       req.on('end', () => {
         try {
           const { action, slug, ...o } = JSON.parse(body); const d = load();
+          let note = null;
           if (action === 'add') add(d, o);
+          else if (action === 'photos') { const r = addPhotos(d, slug, o.photos, !!o.replace); note = `${r.album.title}: ${r.added} added, ${r.album.photos.length} photos in all.`; }
           else if (action === 'remove') remove(d, slug);
           else if (action === 'landing') landing(d, slug, !!o.on);
           else if (action === 'move') move(d, slug, o.position);
           else fail('Unknown action.');
-          save(d); json(res, 200, d);
+          save(d); json(res, 200, { ...d, note });
         } catch (e) { json(res, 400, { error: e.message }); }
       });
       return;
@@ -141,6 +160,7 @@ main{max-width:1080px;margin:0 auto;padding:48px 24px 96px}h1{font:400 40px/1.1 
 p{margin:0;color:var(--quiet)}ul{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
 li{display:grid;grid-template-columns:72px 1fr auto;gap:16px;align-items:center;padding:12px 0;border-bottom:1px solid var(--line)}
 li img{width:72px;height:54px;object-fit:cover;border-radius:6px;background:var(--deep)}li small{color:var(--quiet);display:block}
+li form.more{grid-column:1/-1;margin:4px 0 8px}li form.more textarea{min-height:88px}
 .row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 button,.b{font:500 14px/1 inherit;min-height:36px;padding:0 14px;border-radius:999px;border:1px solid #cfc5b4;background:var(--paper);color:var(--ink);cursor:pointer}
 button:hover{background:var(--deep)}button.on{background:var(--ink);border-color:var(--ink);color:var(--paper)}
@@ -173,19 +193,27 @@ const $=s=>document.querySelector(s),msg=$('#msg');
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 async function post(body){const r=await fetch('/api',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)});
   const d=await r.json();if(!r.ok){msg.textContent=d.error;return null}return d}
-function draw(d){
+let open=null,last=null;
+function draw(d){last=d;
   $('#cat').innerHTML=d.categories.map(c=>'<option value="'+c.slug+'">'+esc(c.label)+'</option>').join('');
   $('#list').innerHTML=d.albums.map((a,i)=>'<li><img src="'+esc(a.cover||'')+'" alt=""><div><strong>'+esc(a.title)+'</strong><small>'+esc(a.category)+' · '+esc(a.type)+' · '+(a.photos.length||a.count)+' photos'+(a.venue?' · '+esc(a.venue):'')+'</small></div><div class="row">'
+    +'<button data-a="photos" data-s="'+a.slug+'" aria-expanded="'+(open===a.slug)+'">Add photos</button>'
     +'<button data-a="landing" data-s="'+a.slug+'" class="'+(a.selected?'on':'')+'" aria-pressed="'+a.selected+'">'+(a.selected?'● On landing':'○ Landing')+'</button>'
     +'<button data-a="up" data-s="'+a.slug+'" data-p="'+i+'" aria-label="Move '+esc(a.title)+' up"'+(i?'':' disabled')+'>↑</button>'
     +'<button data-a="down" data-s="'+a.slug+'" data-p="'+(i+2)+'" aria-label="Move '+esc(a.title)+' down"'+(i<d.albums.length-1?'':' disabled')+'>↓</button>'
-    +'<button data-a="remove" data-s="'+a.slug+'" data-t="'+esc(a.title)+'" class="danger">Remove</button></div></li>').join('')||'<li>No albums yet.</li>';
+    +'<button data-a="remove" data-s="'+a.slug+'" data-t="'+esc(a.title)+'" class="danger">Remove</button></div>'
+    +(open===a.slug?'<form class="more" data-s="'+a.slug+'"><label class="wide">Photos to add to '+esc(a.title)+' <span>a folder inside the project (e.g. public/photos/'+a.slug+'), or one photo address per line. Ones already in the album are skipped.</span><textarea name="photos" required></textarea></label>'
+      +'<label class="row" style="display:flex"><input type="checkbox" name="replace" style="width:auto"> Replace the current set instead of adding to it</label><div style="text-align:right"><button class="primary">Add photos</button></div></form>':'')
+    +'</li>').join('')||'<li>No albums yet.</li>';
 }
 $('#list').onclick=async e=>{const b=e.target.closest('button');if(!b)return;const {a,s,p,t}=b.dataset;let d;
+  if(a==='photos'){open=open===s?null:s;draw(last);if(open)$('form.more textarea').focus();return}
   if(a==='remove'){if(!confirm('Remove "'+t+'" from the site? The photo files are not deleted.'))return;d=await post({action:'remove',slug:s});if(d)msg.textContent='Removed '+t+'.'}
   else if(a==='landing')d=await post({action:'landing',slug:s,on:!b.classList.contains('on')});
   else d=await post({action:'move',slug:s,position:+p});
   if(d)draw(d)};
+$('#list').addEventListener('submit',async e=>{e.preventDefault();const f=e.target,o=Object.fromEntries(new FormData(f));
+  const d=await post({action:'photos',slug:f.dataset.s,photos:o.photos,replace:!!o.replace});if(d){open=null;draw(d);msg.textContent=d.note}});
 $('#f').onsubmit=async e=>{e.preventDefault();const o=Object.fromEntries(new FormData(e.target));o.landing=!!o.landing;
   const d=await post({action:'add',...o});if(d){draw(d);e.target.reset();msg.textContent='Added '+o.title+'.'}};
 draw(await (await fetch('/api')).json());

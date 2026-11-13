@@ -1,4 +1,4 @@
-/* The opening (landing.js): a full-screen photograph that changes on its own, a slim strip across the top,
+/* The opening (landing.js): a full-screen photograph that changes on its own, the bar across the top (site.css),
    a small caption and a row of ticks at the bottom. Nothing else sits on the photograph. */
 .hero { position: absolute; inset: 0; overflow: hidden; color: var(--on-dark); }
 .hero[hidden] { display: none; }
@@ -14,13 +14,6 @@
   background: linear-gradient(to bottom, rgb(18 18 17 / .5), rgb(18 18 17 / 0) 22%),
               linear-gradient(to top, rgb(18 18 17 / .62), rgb(18 18 17 / 0) 30%); }
 
-.hero-top { position: absolute; inset: 0 0 auto 0; z-index: 3; display: flex; align-items: center; gap: var(--space-5);
-  padding: var(--space-4) var(--page-pad); font: 500 var(--fs-pill)/1 var(--font-body); }
-.hero-top .logo img { width: 76px; height: auto; }
-.hero-top .rule { flex: 1; height: 1px; background: rgb(253 253 252 / .45); }
-.hero-top a { color: inherit; text-decoration: none; border-radius: 4px; }
-.hero-top .text { display: inline-flex; align-items: center; min-height: var(--tap); }
-.hero-top .text:hover { text-decoration: underline; }
 .hero :focus-visible { outline-color: var(--on-dark); }
 
 .hero-foot { position: absolute; inset: auto 0 0 0; z-index: 3; display: flex; align-items: flex-end; justify-content: space-between;
@@ -46,11 +39,11 @@
 /* ---------- the way in (mountIntro): pages of a photobook, one per landing album. Each has the logo, its
    photographs and one line, with room around all three. Scrolling grows `.cell.mid` to fill the screen. ---------- */
 .intro { position: relative; height: 270vh; height: calc(100svh * 2.7); }
-.intro-pin { position: sticky; top: 0; height: 100vh; height: 100svh; min-height: 520px; overflow: hidden; background: var(--paper); }
+.intro-pin { position: sticky; top: 0; height: 100vh; height: 100svh; min-height: 520px; overflow: hidden; }
 .intro-paper { position: absolute; inset: 0; }
 .pages { position: absolute; inset: 0; opacity: var(--ink, 1); }
 .page { position: absolute; inset: 0; display: grid; place-items: center; padding: var(--space-6) var(--page-pad) var(--space-9);
-  background: var(--paper); visibility: hidden; }
+  visibility: hidden; }
 .page.on { visibility: visible; z-index: 2; }
 /* changing to the next album before any scrolling: the page fades away to white, then the next one fades up.
    Slower and gentler than the cross-fade between full-screen photographs. */
@@ -62,44 +55,50 @@
 .spread { display: grid; justify-items: center; width: var(--w); }
 .cell { position: relative; overflow: hidden; width: 100%; aspect-ratio: var(--ar); background: var(--paper-deep); }
 .cell img { width: 100%; height: 100%; object-fit: cover; }
-.intro-logo { width: 96px; height: auto; margin-bottom: var(--space-7); }
-.intro-title { margin-top: var(--space-7); text-align: center; font: 400 var(--fs-body)/1.3 var(--font-display); letter-spacing: var(--track-title); text-wrap: balance; }
+.intro-logo { flex: none; width: 96px; height: auto; margin-inline: var(--space-4); }
+/* The frame: 1 px hairlines in the bar's rule colour, reaching --fpad beyond
+   the photographs on each side. One grid for the whole frame: the middle column is as wide as the wider of the logo and
+   the line of text, so the gap in the top edge matches the gap in the foot. Each short line draws its half of a corner. */
+.frame { --fpad: var(--space-5); --fl: 1px solid var(--rule-dark);   /* the bar's hairline. Not var(--ink): inside .intro that is the page's fade */
+  display: grid; grid-template-columns: minmax(var(--space-5), 1fr) auto minmax(var(--space-5), 1fr);
+  width: calc(100% + 2 * var(--fpad)); margin-inline: calc(-1 * var(--fpad)); }
+.fr-edge { display: contents; }
+.fr-edge i { position: relative; }
+.fr-edge i::after { content: ''; position: absolute; left: 0; right: 0; }
+.fr-edge.top > * { grid-row: 1; }
+.fr-edge.top .intro-logo { justify-self: center; }
+.fr-edge.top i::after { top: 50%; bottom: 0; border-top: var(--fl); }
+.fr-edge.foot { font-size: var(--fs-body); }
+.fr-edge.foot > * { grid-row: 3; }
+/* the foot meets the middle of the line of text, however many rows it wraps to */
+.fr-edge.foot i::after { top: 0; bottom: 50%; border-bottom: var(--fl); }
+.fr-edge i:first-child::after { border-left: var(--fl); }
+.fr-edge i:last-child::after { border-right: var(--fl); }
+/* In the row layout (the wider page) the logo's gap is just the logo's width again, not the line's: Shawn, 2026-11-12. */
+.lay-row .fr-edge.top { display: flex; grid-row: 1; grid-column: 1 / -1; }
+.lay-row .fr-edge.top i { flex: 1; }
+.lay-row .fr-edge.top .intro-logo { margin-inline: var(--space-4); }
+.fr-mid { grid-row: 2; grid-column: 1 / -1; border-inline: var(--fl); padding: var(--space-6) var(--fpad); }
+.intro-title { flex: 0 1 auto; padding-inline: var(--space-4); text-align: center; font: 400 var(--fs-body)/1.3 var(--font-display); letter-spacing: var(--track-title); text-wrap: balance; }
 .intro-title em { font-style: italic; color: var(--terracotta); }
 
-/* row: three photographs. A column on a phone, side by side and upright on wider screens. */
-.lay-row .spread { --w: min(56vw, calc((100svh - 440px) / 3 * 1.5), 280px); --ar: 3 / 2; }
+/* The page waits for its photographs' shapes, then comes up in one of two layouts. */
+.page .spread { opacity: 0; transition: opacity 900ms var(--ease); }
+.page.ready .spread { opacity: 1; }
 .trio { display: grid; gap: var(--space-2); width: 100%; }
-
-/* solo: one upright photograph with the page to itself */
-.lay-solo .spread { --w: min(58vw, calc((100svh - 400px) * .8), 280px); --ar: 4 / 5; }
-
-/* inset: one photograph laid on a full-page one, on a small sheet with the logo and the line */
-.lay-inset { display: block; padding: 0; background: var(--dark); }
-.lay-inset .ground { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
-.lay-inset .card { --w: min(36vw, 150px); --ar: 4 / 5; position: absolute; left: var(--ix); top: var(--iy); transform: translate(-50%, -50%);
-  box-sizing: content-box; padding: var(--space-4) var(--space-3); background: var(--paper); box-shadow: 0 18px 44px -18px rgb(18 18 17 / .55); }
-.lay-inset .intro-logo { width: 56px; margin-bottom: var(--space-4); }
-.lay-inset .intro-title { margin-top: var(--space-4); font-size: var(--fs-caption); }
-
-/* split: one photograph across a white half and a black half */
-.lay-split { background: linear-gradient(to bottom, var(--paper) 50%, var(--dark) 50%); }
-.lay-split .spread { --w: min(78vw, calc((100svh - 400px) * 1.5), 420px); --ar: 3 / 2; }
-.lay-split .intro-title { color: var(--on-dark); }
-.lay-split .intro-title em { color: var(--ember); }
+/* column: three landscape photographs stacked down the page */
+.lay-col .spread { --w: min(52vw, calc((100svh - 440px) / 3 * 1.5), 300px); --ar: 3 / 2; }
+/* row: three upright photographs side by side */
+.lay-row .spread { --cw: min(27vw, calc((100svh - 400px) * .8), 300px); --ar: 4 / 5; --w: calc(var(--cw) * 3 + 2 * var(--space-2)); }
+.lay-row .trio { grid-template-columns: repeat(3, 1fr); }
 
 @media (min-width: 700px) {
-  .lay-row .spread { --cw: min(20vw, calc((100svh - 400px) * .8), 300px); --ar: 4 / 5; --w: calc(var(--cw) * 3 + 2 * var(--space-3)); }
-  .trio { grid-template-columns: repeat(3, 1fr); gap: var(--space-3); }
-  .lay-solo .spread { --w: min(30vw, calc((100svh - 420px) * .8), 400px); }
-  .intro-logo { margin-bottom: var(--space-8); }
-  .intro-title { margin-top: var(--space-8); font-size: var(--fs-lede); }
-  .lay-inset .card { --w: min(19vw, 280px); left: var(--ixw); top: var(--iyw); padding: var(--space-6) var(--space-5); }
-  .lay-inset .intro-logo { width: 84px; margin-bottom: var(--space-6); }
-  .lay-inset .intro-title { margin-top: var(--space-6); font-size: var(--fs-body); }
-  .lay-split { background: linear-gradient(to right, var(--paper) 50%, var(--dark) 50%); }
-  .lay-split .spread { --w: min(54vw, calc((100svh - 420px) * 1.5), 780px); }
-  .lay-split .intro-logo { justify-self: start; }
-  .lay-split .intro-title { justify-self: end; text-align: right; max-width: 16ch; }
+  .trio { gap: var(--space-3); }
+  .lay-col .spread { --w: min(26vw, calc((100svh - 480px) / 3 * 1.5), 340px); }
+  .lay-row .spread { --cw: min(20vw, calc((100svh - 400px) * .8), 300px); --w: calc(var(--cw) * 3 + 2 * var(--space-3)); }
+  .frame { --fpad: var(--space-8); }
+  .fr-mid { padding-block: var(--space-7); }
+  .intro-title, .fr-edge.foot { font-size: var(--fs-lede); }
 }
 .intro-cue { position: absolute; z-index: 6; left: 50%; bottom: var(--space-4); display: grid; justify-items: center; gap: var(--space-2); transform: translateX(-50%);
   font: 500 var(--fs-caption)/1 var(--font-body); letter-spacing: .12em; text-transform: uppercase; color: #8A8883; mix-blend-mode: difference; opacity: var(--ink, 1); }
@@ -110,4 +109,4 @@
 .intro.rest .hero { opacity: 0; }   /* not visibility: the slides set their own and would show through */
 .intro.rest .slide { transition: none; }
 .intro:not(.open) .hero { pointer-events: none; }
-.hero-top, .hero-foot, .hero-shade { opacity: var(--ui, 1); }
+.hero-foot, .hero-shade { opacity: var(--ui, 1); }

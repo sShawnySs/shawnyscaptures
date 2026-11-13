@@ -139,6 +139,19 @@ def print_meadow(r):    # leaves in front of the lens
     t = np.clip((t - 0.5) * 1.5 + 0.42, 0, 1)
     return finish(ramp(t, [(0, (26, 56, 28)), (0.5, (52, 100, 42)), (0.8, (118, 160, 54)), (1, (186, 212, 92))]), r, 0.05)
 
+# The wall light (draft v0.3): the orange long exposure from the moodboard, remade on white so it can sit behind
+# the pages. drafts/v2/light.js moves it; no subject, only warm light blooming from the lower right.
+def print_glow(r, w=1200, h=900):
+    y, x = np.mgrid[0:h, 0:w]; u = x / w; v = y / h
+    f = lambda sx, sy: norm(aniso(r.normal(0, 1, (h, w)), sx, sy))
+    bloom = np.exp(-(((u - 0.74) / 0.50) ** 2 + ((v - 0.80) / 0.46) ** 2))
+    second = 0.45 * np.exp(-(((u - 0.18) / 0.30) ** 2 + ((v - 0.95) / 0.30) ** 2))
+    t = np.clip((bloom + second) * (0.62 + 0.75 * f(150, 110)) + 0.16 * (f(60, 40) - 0.5), 0, 1)
+    img = ramp(t, [(0, (253, 253, 252)), (0.22, (253, 240, 224)), (0.48, (250, 204, 158)), (0.74, (246, 150, 84)), (1, (240, 104, 44))])
+    g = r.normal(0, 1, (h, w)) * 0.022
+    return Image.fromarray((np.clip(img + g[..., None], 0, 1) * 255).astype(np.uint8), "RGB")
+print_glow(np.random.default_rng(113)).save(OUT / "print-glow.webp", quality=80)
+
 for name, fn, seed in [("dusk", print_dusk, 101), ("foliage", print_foliage, 103), ("water", print_water, 107), ("meadow", print_meadow, 109)]:
     fn(np.random.default_rng(seed)).save(OUT / f"print-{name}.webp", quality=78)
 print("wrote", sorted(p.name for p in OUT.iterdir()))

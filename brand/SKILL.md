@@ -13,7 +13,7 @@ The full guidelines are in `BRAND.md`, next to this file. Read it before designi
 ## Palette (use only these)
 - Captures (warm): Golden Hour `#F26B2E` (signature), Honey `#E0A13A`, Terracotta `#B0452A` (small accent text on light), Rosehip `#7E2A1C` (deep warm ground).
 - Bridge (shared): Linen `#FFFAEB`, Oat `#EFE6CC`, Umber `#6B5A4C`, Darkroom `#3C291A`.
-- **Website (v2, 2026-11-11): neutral frames.** Grounds are Paper `#FAFAF7` frames on a Seam `#2B2B28`, and Viewer `#141413` behind full-screen photos; text Ink `#1C1C1A` / Ink Quiet `#5E5E59` (Quiet Dark `#A3A39C` on Viewer). Warm colours are marks only: Terracotta for links on Paper, Golden Hour for rays and hover fills (never text on Paper), Honey for text accents on Viewer. One optional accent per album, sampled from its cover, at ≥4.5:1. Frames, radii and motion follow the design brand. No leaf shadow or grain on the site.
+- **Website (v2, 2026-11-11): neutral frames.** Grounds are Paper `#FAFAF7` frames on a Seam `#2B2B28`, and Viewer `#141413` behind full-screen photos; text Ink `#20201E` / Ink Quiet `#5E5E59` (Quiet Dark `#A3A39C` on Viewer). Warm colours are marks only: Terracotta for links on Paper, Golden Hour for rays and hover fills (never text on Paper), Honey for text accents on Viewer. One optional accent per album, sampled from its cover, at ≥4.5:1. Frames, radii and motion follow the design brand. No leaf shadow or grain on the site.
 - **Print and social:** the default ground is **Darkroom**, with Rosehip for cards and Linen for text-heavy pieces. Never use pure white or pure black.
 - **Never** use Pine `#36594F`, Harbour `#4A6B78`, Eucalyptus `#8FA89B` or Sea Glass `#DCE8E4`. They belong to the design brand.
 

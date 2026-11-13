@@ -5,7 +5,8 @@
   --paper: #FDFDFC;        /* ground */
   --paper-deep: #F4F4F2;   /* boxes */
   --line: #E5E5E1;         /* 1 px rules */
-  --ink: #1B1A18;          /* text, 16.6:1 on paper */
+  --rule-dark: rgb(32 32 30 / .3);   /* 1 px lines drawn over the wall: the bar's rule, the landing frame */
+  --ink: #20201E;          /* text: the brand's Ink (2026-11-12), 16:1 on paper */
   --ink-quiet: #5F5D58;    /* secondary text, 6.5:1 on paper, 6:1 on a box */
   --dark: #121211;         /* viewer */
   --on-dark: #FDFDFC;
@@ -33,8 +34,13 @@
   --space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px;
   --space-6: 32px; --space-7: 48px; --space-8: 64px; --space-9: 80px; --space-10: 120px; --space-11: 160px;
   --section-gap: var(--space-9);
+  --block-gap: var(--space-5);   /* between boxes, cards and rows on every page */
   --max: 1320px; --measure: 62ch; --page-pad: 20px; --tap: 44px; --nav-h: 72px;
   --radius-chip: 8px; --radius-card: 12px; --radius-panel: 16px; --radius-pill: 999px;
+  /* From the design portfolio (src/styles/tokens.css): the soft edges, the cursor's grey, the tile shadow */
+  --edge-blur-top: 64px; --edge-blur-bottom: 56px; --edge-blur-max: 7px;
+  --bar-blur: 10px;   /* the bar and the phone's top layer: the edges' 7 px and 40% more, so less shows through */
+  --cursor-grey: #8E8E88; --radius-tile: 6px; --shadow-tight: 0 3px 6px -2px rgb(0 0 0 / 0.16);
   --ease: cubic-bezier(0.65, 0, 0, 1);
   --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
 }

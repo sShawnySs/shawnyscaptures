@@ -1,0 +1,10 @@
+# Only the site goes up: the draft, its data and the public files. Notes, tools and private folders stay local.
+mirror/
+scripts/
+docs/
+brand/
+.claude/
+CLAUDE.md
+PROJECT.md
+data/site.backup.json
+drafts/home.html

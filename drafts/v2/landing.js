@@ -73,17 +73,15 @@ export function mountHero(el, albums, onChange = () => {}) {
 
 const LINE = '<p class="intro-title"><em>Quiet, honest</em> photographs of loud, happy days.</p>';
 const logo = (ink) => `<img class="intro-logo" src="../../public/assets/shawnys-logo-${ink}.png" width="1000" height="747" alt="Shawnys Captures">`;
-// One page per landing album, laid out like a page of a photobook. `.cell.mid` is the photograph that grows.
+// One page per landing album, laid out like a page of a photobook: the logo, three photographs, one line.
+// `.cell.mid` is the photograph that grows. The layout class is added once the photographs' shapes are known.
 function page(a) {
   const t = trio(a), img = (src) => `<img alt="" src="${esc(src)}" decoding="async">`;
-  const at = a.insetAt || {}, ph = at.phone || [50, 30], wd = at.wide || [76, 46];
-  if (a.layout === 'inset') return `<div class="page lay-inset" style="--ix:${+ph[0]}%;--iy:${+ph[1]}%;--ixw:${+wd[0]}%;--iyw:${+wd[1]}%">
-      <img class="ground" alt="" src="${esc(a.ground || t[0])}" decoding="async">
-      <div class="spread card">${logo('darkroom')}<div class="cell mid">${img(t[1])}</div>${LINE}</div></div>`;
-  if (a.layout === 'solo') return `<div class="page lay-solo"><div class="spread">${logo('darkroom')}<div class="cell mid">${img(t[1])}</div>${LINE}</div></div>`;
-  if (a.layout === 'split') return `<div class="page lay-split"><div class="spread">${logo('darkroom')}<div class="cell mid">${img(t[1])}</div>${LINE}</div></div>`;
-  return `<div class="page lay-row"><div class="spread">${logo('darkroom')}
-      <div class="trio"><div class="cell">${img(t[0])}</div><div class="cell mid">${img(t[1])}</div><div class="cell">${img(t[2])}</div></div>${LINE}</div></div>`;
+  // A hairline frame round the photographs: the logo sits in the gap of its top edge, the line in the gap of its foot.
+  return `<div class="page"><div class="spread"><div class="frame">
+      <div class="fr-edge top"><i></i>${logo('darkroom')}<i></i></div>
+      <div class="fr-mid"><div class="trio"><div class="cell">${img(t[0])}</div><div class="cell mid">${img(t[1])}</div><div class="cell">${img(t[2])}</div></div></div>
+      <div class="fr-edge foot"><i></i>${LINE}<i></i></div></div></div></div>`;
 }
 
 export function mountIntro(section, hero) {
@@ -107,7 +105,7 @@ export function mountIntro(section, hero) {
     cur = p; if (!g) return; const c = 1 - ease(p);            // c: 1 = a print in its place, 0 = the whole screen
     // the frame itself changes size, so the photograph is always cropped to fit what is showing
     slides.style.inset = `${(g.t * c).toFixed(1)}px ${(g.r * c).toFixed(1)}px ${(g.b * c).toFixed(1)}px ${(g.l * c).toFixed(1)}px`;
-    section.style.setProperty('--ui', clamp((p - 0.8) / 0.2).toFixed(3));   // the caption and strip arrive last
+    document.documentElement.style.setProperty('--ui', clamp((p - 0.8) / 0.2).toFixed(3));   // the caption and the bar arrive last
     section.style.setProperty('--ink', (1 - clamp(p / 0.4)).toFixed(3));    // the page around the photograph leaves first
     section.classList.toggle('rest', p < REST);   // at rest the page shows its own photograph; the moving frame stays out of the way
     section.classList.toggle('open', p > 0.9);
@@ -143,10 +141,25 @@ export function mountIntro(section, hero) {
     from.classList.add('out');
   }
   const refresh = () => { if (!section.offsetParent) return; measure(); cur = -1; update(); };
+  // Mostly landscape photographs stack in a column; mostly upright ones sit side by side in a row. On a phone every
+  // page takes the tall column, whatever its photographs or its album's `layout` (Shawn, 2026-11-12): three upright
+  // photographs side by side are too small there. Crossing the breakpoint lays the pages out again.
+  const phone = matchMedia('(max-width: 599px)');
+  const layouts = [];
+  pages.forEach((pg, i) => {
+    const imgs = [...pg.querySelectorAll('.cell img')]; let left = imgs.length, wide = 0;
+    const decide = () => { const forced = ['column', 'row'].includes(list[i].layout) ? list[i].layout : null;
+      const col = phone.matches || (forced || (wide * 2 > imgs.length ? 'column' : 'row')) === 'column';
+      pg.classList.toggle('lay-col', col); pg.classList.toggle('lay-row', !col); pg.classList.add('ready');
+      if (i === at) refresh(); };
+    layouts[i] = () => { if (pg.classList.contains('ready')) decide(); };
+    imgs.forEach((im) => { const done = () => { if (im.naturalWidth > im.naturalHeight) wide++; if (!--left) decide(); };
+      im.complete ? done() : (im.addEventListener('load', done, { once: true }), im.addEventListener('error', done, { once: true })); });
+  });
+  phone.addEventListener?.('change', () => layouts.forEach((f) => f()));
   addEventListener('scroll', update, { passive: true });
   addEventListener('resize', refresh);
   document.fonts?.ready.then(refresh);
-  book.addEventListener('load', refresh, true);
   refresh();
   return { refresh, show };
 }

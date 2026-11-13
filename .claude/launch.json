@@ -4,8 +4,21 @@
     {
       "name": "photo-draft",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "4341"],
+      "runtimeArgs": [
+        "scripts/serve.py",
+        "4341"
+      ],
       "port": 4341
+    },
+    {
+      "name": "album-manager",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "scripts/albums.mjs",
+        "admin",
+        "--no-open"
+      ],
+      "port": 4342
     }
   ]
 }

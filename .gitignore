@@ -2,3 +2,8 @@
 node_modules/
 .env*
 data/site.backup.json
+
+# Private: analysis of Shawn's own AI sessions; never pushed or deployed
+mirror/
+# Vercel CLI link, if one is made locally
+.vercel/

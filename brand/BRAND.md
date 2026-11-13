@@ -64,7 +64,7 @@ shifts how skin and white dresses read (simultaneous contrast).
 | Seam | `#2B2B28` | The page ground between frames (1 px seam) |
 | Viewer | `#141413` | The full-screen photo viewer and the album panel's photo bays. Never pure black |
 | Line | `#DEDED9` | 1 px rules inside a frame |
-| Ink | `#1C1C1A` | Text on Paper (16.3:1) |
+| Ink | `#20201E` | Text on Paper (15.6:1) |
 | Ink Quiet | `#5E5E59` | Secondary text on Paper (6.2:1) |
 | Quiet Dark | `#A3A39C` | Secondary text on Viewer (7.3:1) |
 
@@ -134,7 +134,7 @@ Web scale: 72 / 44 / 28 / 18 / 14 px. Display line-height 1.05 with −1 to −2
   --golden-hour: #F26B2E; --honey: #E0A13A; --terracotta: #B0452A; --rosehip: #7E2A1C;
   /* v2 web neutrals */
   --paper: #FAFAF7; --seam: #2B2B28; --viewer: #141413; --line: #DEDED9;
-  --ink: #1C1C1A; --ink-quiet: #5E5E59; --quiet-dark: #A3A39C;
+  --ink: #20201E; --ink-quiet: #5E5E59; --quiet-dark: #A3A39C;
   --radius-frame: 16px; --radius-inner: 8px; --seam-w: 1px;
 
   --font-display: 'Averia Serif Libre', Georgia, serif;
