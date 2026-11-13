@@ -48,10 +48,13 @@ https://shawnyscaptures.myportfolio.com/. Sibling of the design portfolio at
 - `node scripts/albums.mjs` opens the album manager at http://localhost:4342: add an album (title, category,
   type, venue, a photo folder such as `public/photos/<slug>` or a list of photo addresses), add photos to an
   existing album ("Add photos" on its row), remove one,
-  reorder, and choose which show full-screen on the landing.
+  reorder, choose which show full-screen on the landing, and publish.
 - The same from the command line: `node scripts/albums.mjs list | add | photos <slug> --photos <folder> |
   remove <slug> | landing <slug> on|off | move <slug> <position>` (the options are at the top of the script).
 - Each change backs up the previous file to `data/site.backup.json`.
+- Changes save only to `data/site.json` on this Mac. **Publish to the live site** (top of the manager, or
+  `node scripts/albums.mjs publish`) commits that one file and pushes it to GitHub; once the repo is imported on
+  Vercel, each push goes live in about a minute. It never commits any other file.
 - Photos live on **Cloudinary** (free plan, chosen 2026-11-13). Copy `.env.example` to `.env` and paste the
   `CLOUDINARY_URL` from the Cloudinary dashboard (private: git and Vercel ignore it). From then on `add` and `photos`
   upload to the folder `shawnys/<slug>` and store the Cloudinary addresses; `node scripts/albums.mjs cloud [<slug>]`

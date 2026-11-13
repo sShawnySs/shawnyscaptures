@@ -11,11 +11,16 @@
 //   node scripts/albums.mjs landing <slug> on|off     show or hide it on the landing page
 //   node scripts/albums.mjs move <slug> <position>    1 = first
 //   node scripts/albums.mjs cloud [<slug>]            copy an album's photos (or every album's) to Cloudinary
+//   node scripts/albums.mjs publish                   put the album changes on the live site (the Publish button)
 //
 // Photos and Cloudinary: once .env holds your CLOUDINARY_URL (see scripts/cloudinary.mjs), photos added with `add` or
 // `photos` are uploaded there and the album keeps their Cloudinary addresses. Without it they stay as given (a
 // project folder or web addresses). `cloud` moves what is already in data/site.json, including the stand-ins still
 // on the old site's servers.
+//
+// Publishing: every change saves only to data/site.json on this Mac. Publish commits that one file and pushes it to
+// GitHub; Vercel (once the repo is imported there) puts each push live in about a minute. Nothing else in the project
+// is committed by it.
 //
 // Every change first copies the current file to data/site.backup.json, so the last change can be undone
 // with: cp data/site.backup.json data/site.json
@@ -23,7 +28,7 @@ import { readFileSync, writeFileSync, copyFileSync, readdirSync, existsSync, sta
 import { createServer } from 'node:http';
 import { dirname, join, relative, extname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { exec } from 'node:child_process';
+import { exec, execFile } from 'node:child_process';
 import { cloudConfig, toCloud, isCloud } from './cloudinary.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
@@ -110,6 +115,27 @@ async function cloud(d, slug) {
   a.featured = (a.featured || []).map(swap); a.photos = a.photos.map(swap);
   return { album: a, moved: all.length };
 }
+// ---------------------------------------------------------------- publishing (data/site.json only)
+const git = (...a) => new Promise((done) => execFile('git', a, { cwd: ROOT }, (err, out, errOut) => done({ ok: !err, out: `${out}${errOut}`.trim() })));
+/** Album changes not yet on GitHub: an edited site.json, or an album commit made but not pushed. */
+async function unpublished() {
+  const changed = (await git('status', '--porcelain', '--', 'data/site.json')).out !== '';
+  const ahead = await git('rev-list', '--count', '@{u}..HEAD');
+  return changed || (ahead.ok && Number(ahead.out) > 0);
+}
+async function publish() {
+  if ((await git('status', '--porcelain', '--', 'data/site.json')).out) {
+    const when = new Date().toLocaleString('en-SG', { dateStyle: 'medium', timeStyle: 'short' });
+    const c = await git('commit', '-m', `Albums updated (${when})`, '--', 'data/site.json');
+    c.ok || fail(`Could not save the change: ${c.out.split('\n').pop()}`);
+  }
+  const ahead = await git('rev-list', '--count', '@{u}..HEAD');
+  if (ahead.ok && Number(ahead.out) === 0) return 'Nothing new to publish: the live site already has every change.';
+  const p = await git('push');
+  p.ok || fail(`Saved on this Mac, but GitHub refused it: ${p.out.split('\n').pop()} Try again in a moment, or ask Claude.`);
+  return 'Published. The live site updates in about a minute (once the repo is connected to Vercel).';
+}
+
 const remove = (d, slug) => { const a = find(d, slug); d.albums = d.albums.filter((x) => x !== a); return a; };
 const landing = (d, slug, on) => { const a = find(d, slug); a.selected = on; return a; };
 function move(d, slug, pos) {
@@ -144,6 +170,7 @@ try {
       const r = await cloud(d, a.slug); save(d); say(r.moved ? `${r.album.title}: copied ${r.moved}.` : `${r.album.title}: already on Cloudinary.`);
     }
   }
+  else if (cmd === 'publish') say(await publish());
   else if (!cmd || cmd === 'admin') serve();
   else fail(`Unknown command "${cmd}". Open this file to see the commands.`);
 } catch (e) { console.error(e.message); process.exit(1); }
@@ -156,7 +183,7 @@ function serve() {
     // Local tool: only this machine may talk to it, and only from its own page.
     if (req.headers.host !== `localhost:${PORT}` && req.headers.host !== `127.0.0.1:${PORT}`) return json(res, 403, { error: 'Local only.' });
     if (req.method === 'GET' && req.url === '/') { res.writeHead(200, { 'content-type': 'text/html; charset=utf-8' }); return res.end(PAGE); }
-    if (req.method === 'GET' && req.url === '/api') return json(res, 200, load());
+    if (req.method === 'GET' && req.url === '/api') return unpublished().then((u) => json(res, 200, { ...load(), unpublished: u }));
     if (req.method === 'POST' && req.url === '/api') {
       if (req.headers['content-type'] !== 'application/json') return json(res, 415, { error: 'JSON only.' });
       let body = '';
@@ -170,8 +197,9 @@ function serve() {
           else if (action === 'remove') remove(d, slug);
           else if (action === 'landing') landing(d, slug, !!o.on);
           else if (action === 'move') move(d, slug, o.position);
+          else if (action === 'publish') { note = await publish(); return json(res, 200, { ...load(), note, unpublished: await unpublished() }); }
           else fail('Unknown action.');
-          save(d); json(res, 200, { ...d, note });
+          save(d); json(res, 200, { ...d, note, unpublished: true });
         } catch (e) { json(res, 400, { error: e.message }); }
       });
       return;
@@ -201,12 +229,15 @@ button.danger{color:var(--terracotta)}:focus-visible{outline:2px solid var(--ter
 form{display:grid;grid-template-columns:1fr 1fr;gap:16px;background:var(--deep);padding:24px;border-radius:16px}
 label{display:grid;gap:6px;font-weight:500;font-size:14px}label.wide{grid-column:1/-1}label span{font-weight:400;color:var(--quiet)}
 input,select,textarea{font:400 16px/1.4 inherit;padding:10px 12px;border:1px solid #cfc5b4;border-radius:8px;background:var(--paper);color:var(--ink);width:100%}
-textarea{min-height:120px;font-size:14px}#msg{min-height:24px;margin-top:16px;color:var(--terracotta)}
+textarea{min-height:120px;font-size:14px}
+.top{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}.pub{display:grid;justify-items:end;gap:6px}
+.pub small{color:var(--quiet)}.pub small.due{color:var(--terracotta)}button:disabled{opacity:.45;cursor:default}#msg{min-height:24px;margin-top:16px;color:var(--terracotta)}
 @media(max-width:640px){form{grid-template-columns:1fr}li{grid-template-columns:56px 1fr}li .row{grid-column:1/-1}}
 </style>
 <main>
-<h1>Albums</h1>
-<p>Changes save straight to data/site.json. The filled dot means the album shows full-screen on the landing page.</p>
+<div class="top"><div><h1>Albums</h1>
+<p>Changes save straight to data/site.json on this Mac. The filled dot means the album shows full-screen on the landing page.</p></div>
+<div class="pub"><button id="pub" class="primary">Publish to the live site</button><small id="pubNote"></small></div></div>
 <p id="msg" role="status"></p>
 <ul id="list"></ul>
 <h2>Add an album</h2>
@@ -227,6 +258,8 @@ async function post(body){const r=await fetch('/api',{method:'POST',headers:{'co
   const d=await r.json();if(!r.ok){msg.textContent=d.error;return null}return d}
 let open=null,last=null;
 function draw(d){last=d;
+  const pb=$('#pub'),pn=$('#pubNote');pb.disabled=!d.unpublished;pn.className=d.unpublished?'due':'';
+  pn.textContent=d.unpublished?'You have changes that are not on the live site yet.':'Everything here is on the live site.';
   $('#cat').innerHTML=d.categories.map(c=>'<option value="'+c.slug+'">'+esc(c.label)+'</option>').join('');
   $('#list').innerHTML=d.albums.map((a,i)=>'<li><img src="'+esc(a.cover||'')+'" alt=""><div><strong>'+esc(a.title)+'</strong><small>'+esc(a.category)+' · '+esc(a.type)+' · '+(a.photos.length||a.count)+' photos'+(a.venue?' · '+esc(a.venue):'')+'</small></div><div class="row">'
     +'<button data-a="photos" data-s="'+a.slug+'" aria-expanded="'+(open===a.slug)+'">Add photos</button>'
@@ -248,5 +281,7 @@ $('#list').addEventListener('submit',async e=>{e.preventDefault();const f=e.targ
   const d=await post({action:'photos',slug:f.dataset.s,photos:o.photos,replace:!!o.replace});if(d){open=null;draw(d);msg.textContent=d.note}});
 $('#f').onsubmit=async e=>{e.preventDefault();const o=Object.fromEntries(new FormData(e.target));o.landing=!!o.landing;
   const d=await post({action:'add',...o});if(d){draw(d);e.target.reset();msg.textContent='Added '+o.title+'.'}};
+$('#pub').onclick=async()=>{const b=$('#pub');b.disabled=true;b.textContent='Publishing…';
+  const d=await post({action:'publish'});b.textContent='Publish to the live site';if(d){draw(d);msg.textContent=d.note}else b.disabled=false};
 draw(await (await fetch('/api')).json());
 </script></html>`;
