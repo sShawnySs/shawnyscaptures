@@ -159,36 +159,56 @@
       "extraHour": 250
     },
     "bundle": {
-     "_note": "A wedding day and a pre-wedding booked together: `discount` percent off the two (Shawn, 2026-11-13). `pairs` are the examples shown, wedding hours with pre-wedding hours; any pairing gets the discount.",
-     "label": "Wedding and pre-wedding together",
-     "discount": 10,
-     "pairs": [
-      [
-       10,
-       5
-      ],
-      [
-       8,
-       3
-      ],
-      [
-       6,
-       1.5
+      "_note": "A wedding day and a pre-wedding booked together: `discount` percent off the two (Shawn, 2026-11-13). `pairs` are the examples shown, wedding hours with pre-wedding hours; any pairing gets the discount.",
+      "label": "Wedding and pre-wedding together",
+      "discount": 10,
+      "pairs": [
+        [
+          10,
+          5
+        ],
+        [
+          8,
+          3
+        ],
+        [
+          6,
+          1.5
+        ]
       ]
-     ]
     },
     "events": {
-   "_note": "Sample ladder for Singapore events (2026-11-12), about $180 an hour on average: $200/h at 2 h down to $170/h at 6 h. To confirm.",
-   "label": "Events",
-   "packages": [
-    { "hours": 6, "minImages": 240, "price": 1020, "expedited": 200 },
-    { "hours": 4, "minImages": 160, "price": 720, "expedited": 150 },
-    { "hours": 3, "minImages": 120, "price": 560, "expedited": 120 },
-    { "hours": 2, "minImages": 80, "price": 400, "expedited": 100 }
-   ],
-   "extraHour": 180
-  },
-  "delivery": "4–6 weeks; expedited is 1 week",
+      "_note": "Sample ladder for Singapore events (2026-11-12), about $180 an hour on average: $200/h at 2 h down to $170/h at 6 h. To confirm.",
+      "label": "Events",
+      "packages": [
+        {
+          "hours": 6,
+          "minImages": 240,
+          "price": 1020,
+          "expedited": 200
+        },
+        {
+          "hours": 4,
+          "minImages": 160,
+          "price": 720,
+          "expedited": 150
+        },
+        {
+          "hours": 3,
+          "minImages": 120,
+          "price": 560,
+          "expedited": 120
+        },
+        {
+          "hours": 2,
+          "minImages": 80,
+          "price": 400,
+          "expedited": 100
+        }
+      ],
+      "extraHour": 180
+    },
+    "delivery": "4–6 weeks; expedited is 1 week",
     "payment": "50% on confirmation, 50% one week after the shoot"
   },
   "albums": [
@@ -197,7 +217,7 @@
       "title": "Vincent & Amanda",
       "category": "weddings",
       "type": "Wedding",
-      "hero": "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/0895c0de-ed28-4409-8e08-e8bb79a552ac_rw_1920.jpg?h=554afc9fb1a8e199dc11b0c347cab25c",
+      "hero": "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548743/shawnys/vincent-amanda/0895c0de-ed28-4409-8e08-e8bb79a552ac-rw-1920.jpg",
       "focus": "50% 40%",
       "venue": "CHIJMES",
       "venues": [
@@ -208,19 +228,19 @@
       "selected": true,
       "story": null,
       "accentFallback": "#7A5A3A",
-      "cover": "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/bc015ab8-723c-4eb7-950b-5fbafa50b5af_rwc_390x0x3069x2400x3069.jpg?h=b27efb728721b937acfd57a3c874db16",
+      "cover": "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548743/shawnys/vincent-amanda/bc015ab8-723c-4eb7-950b-5fbafa50b5af-rwc-390x0x3069x2400x3069.jpg",
       "featured": [
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/0895c0de-ed28-4409-8e08-e8bb79a552ac_rw_1920.jpg?h=554afc9fb1a8e199dc11b0c347cab25c",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/825ba910-90da-4249-a3fe-718c47220a67_rw_1920.jpg?h=8a0e6eb22ab3c1a18490b841a2ace36a"
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548743/shawnys/vincent-amanda/0895c0de-ed28-4409-8e08-e8bb79a552ac-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548743/shawnys/vincent-amanda/825ba910-90da-4249-a3fe-718c47220a67-rw-1920.jpg"
       ],
       "photos": [],
       "chapters": [],
       "oldUrl": "/vincent-amanda",
       "note": "Confirm the bride: grid says Amanda, album page says Amadea",
       "trio": [
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/bc015ab8-723c-4eb7-950b-5fbafa50b5af_rwc_390x0x3069x2400x3069.jpg?h=b27efb728721b937acfd57a3c874db16",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/0895c0de-ed28-4409-8e08-e8bb79a552ac_rw_1920.jpg?h=554afc9fb1a8e199dc11b0c347cab25c",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/825ba910-90da-4249-a3fe-718c47220a67_rw_1920.jpg?h=8a0e6eb22ab3c1a18490b841a2ace36a"
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548743/shawnys/vincent-amanda/bc015ab8-723c-4eb7-950b-5fbafa50b5af-rwc-390x0x3069x2400x3069.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548743/shawnys/vincent-amanda/0895c0de-ed28-4409-8e08-e8bb79a552ac-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548743/shawnys/vincent-amanda/825ba910-90da-4249-a3fe-718c47220a67-rw-1920.jpg"
       ]
     },
     {
@@ -228,7 +248,7 @@
       "title": "Clarence & Daraelle",
       "category": "weddings",
       "type": "Pre-wedding",
-      "hero": "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/15d33a42-b4a7-48c7-9806-9d0624356804_rw_1920.jpg?h=a6244be147ad69abcaf866d1ac744dbc",
+      "hero": "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548744/shawnys/clarence-daraelle/15d33a42-b4a7-48c7-9806-9d0624356804-rw-1920.jpg",
       "focus": "50% 40%",
       "venue": "Tampines Eco Park",
       "venues": [
@@ -239,44 +259,44 @@
       "selected": true,
       "story": null,
       "accentFallback": "#4F6339",
-      "cover": "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/f60697ac-0344-4492-a4cb-7a4292bb0caa_rwc_540x0x2762x2160x2762.jpg?h=12d8f314dc32b92a2fc89ab42c6f8d18",
+      "cover": "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548744/shawnys/clarence-daraelle/f60697ac-0344-4492-a4cb-7a4292bb0caa-rwc-540x0x2762x2160x2762.jpg",
       "featured": [
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/15d33a42-b4a7-48c7-9806-9d0624356804_rw_1920.jpg?h=a6244be147ad69abcaf866d1ac744dbc",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/6c44c57f-dfae-497b-bc02-7542bea3deee_rw_1920.jpg?h=b149ba2c41468861eebb99158371d605"
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548744/shawnys/clarence-daraelle/15d33a42-b4a7-48c7-9806-9d0624356804-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548744/shawnys/clarence-daraelle/6c44c57f-dfae-497b-bc02-7542bea3deee-rw-1920.jpg"
       ],
       "photos": [
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/32402949-20cc-416f-a38e-674d38dffd26_rw_1920.jpg?h=c08a4993002126d8d877c5e0b919bd61",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/15d33a42-b4a7-48c7-9806-9d0624356804_rw_1920.jpg?h=a6244be147ad69abcaf866d1ac744dbc",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/9440a7d8-a3b9-42ba-99fb-9b9764a62231_rw_1920.jpg?h=45b2e984d78e9df6fb3ca9b6ae6e50ab",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/6c44c57f-dfae-497b-bc02-7542bea3deee_rw_1920.jpg?h=b149ba2c41468861eebb99158371d605",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/b338de5f-a55e-4183-8d8a-a82a86ee0cee_rw_1920.jpg?h=24df5228df7027355ed77cef1b739723",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/0bcdc68b-1ee7-4dc3-9558-2edf6b4a396d_rw_1920.jpg?h=7932382fe716a3bade4a372f145712ad",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/a043b714-7e4e-47c7-80ef-820cdad41ad8_rw_1920.jpg?h=2e82809d829b5e2bf3de53a55f740bab",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/8ce93f64-befb-4b6e-a069-f299a31dfe19_rw_1920.jpg?h=5f5da528ad9da3a27a93865b927cd220",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/a0719804-9165-4aeb-9211-fc150600efc8_rw_1920.jpg?h=d3deb1f1b0d3e11d64be2f0e08bd9d75",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/7529ba5d-5b1d-491d-b9c7-d9c2a798f733_rw_1920.jpg?h=4a072037cdb03bdddce219c5b6e37de4",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/66c01c00-117a-43d1-9725-b6961d5d1640_rw_1920.jpg?h=4548a92b5393c69f1f5169168f0b0840",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/eb2071b1-427c-476a-b6d3-5e406599945b_rw_1920.jpg?h=a39ba5e634a41e605d66306fb9fc81ae",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/487af74a-13e3-48a2-b432-b15b087d69fe_rw_1920.jpg?h=5362e80484564b9ef00824856f23429a",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/de75c8b1-0282-4a6f-9432-23a96934c57d_rw_1920.jpg?h=4b71f6836a5b82d5d4758ff17fc7cc5a",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/562af55f-4abd-486d-b241-2db48780df36_rw_1920.jpg?h=8325817ddfc28172673030584c2d715b",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/0000e373-1439-4016-a1e2-5872bb79f636_rw_1920.jpg?h=bb7406b7ef603eef94c3c041845288f5",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/cecf81c8-522a-4a09-9f49-a7565eb06b12_rw_1920.jpg?h=118ed7d67d0ae888676de0c08c278e87",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/732f7198-2b48-40e2-84fb-d14603ee050f_rw_1920.jpg?h=2cbf158acf0a52af5d78121f1d3fb074",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/98b11dac-c71b-4943-9603-e511d35b3d9c_rw_1920.jpg?h=9ca3b2b4731c3cd1407bd77262df8596",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/aaee4015-11cd-4691-b356-d335ba672059_rw_1920.jpg?h=b31d720cfa79a7f11d289068d5085329",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/4ba618f4-c4fa-4b19-a751-1b3d24c6d80b_rw_1920.jpg?h=88e67367aa004c935723c3078caae1e0",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/4b5c5457-83fe-4c61-8b29-334467e5b1fe_rw_1920.jpg?h=bcecba8bc5e6ff02e09b6ada9e9a794e",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/c96db32a-92ba-4f79-ac51-33f9acbd42e3_rw_1920.jpg?h=b20415346ef0e8a4a25fbfc7120bf104",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/c911a538-5dcb-4a35-83d6-e42abd187ed0_rw_1920.jpg?h=2a3bb2de35eacf4c16c221053339e4be",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/0c3d4707-215e-4e1d-8cd6-9baa21d6310c_rw_1920.jpg?h=fd817e7d46303919c909f149532f3b85",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/fd952dbd-81dd-4943-95b0-c5e059cafb62_rw_1920.jpg?h=86a229a752bb76b909fa05613e92109f",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/bca7c84b-67b3-42df-9ee4-0eca880470f2_rw_1920.jpg?h=561f7d2c1dc2e1d7e9dcb4966bd894ff",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/5238f1ea-7699-4d19-852a-420ab6bcb1b6_rw_1920.jpg?h=918b0ba27286dd149563a90b11ff297f",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/9eed17a8-29b6-4b8d-861e-e09a03b7debc_rw_1920.jpg?h=20624531b9cb3ed21adc5c806164aa52",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/7d57dacc-188b-4abf-b647-edd8b0b46ca5_rw_1920.jpg?h=09a57520189e76054d5f732c0883b956",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/e50a8a74-9ef7-449f-be19-989b7a697d49_rw_1920.jpg?h=c00d18f097e2c329909c9cc55b55d999",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/065c2e5e-9c06-43d8-9da9-a1027bcf3199_rw_1920.jpg?h=a1a0961e72e5399bd3e274642ece9f2f"
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548745/shawnys/clarence-daraelle/32402949-20cc-416f-a38e-674d38dffd26-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548744/shawnys/clarence-daraelle/15d33a42-b4a7-48c7-9806-9d0624356804-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548745/shawnys/clarence-daraelle/9440a7d8-a3b9-42ba-99fb-9b9764a62231-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548744/shawnys/clarence-daraelle/6c44c57f-dfae-497b-bc02-7542bea3deee-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548745/shawnys/clarence-daraelle/b338de5f-a55e-4183-8d8a-a82a86ee0cee-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548746/shawnys/clarence-daraelle/0bcdc68b-1ee7-4dc3-9558-2edf6b4a396d-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548746/shawnys/clarence-daraelle/a043b714-7e4e-47c7-80ef-820cdad41ad8-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548746/shawnys/clarence-daraelle/8ce93f64-befb-4b6e-a069-f299a31dfe19-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548747/shawnys/clarence-daraelle/a0719804-9165-4aeb-9211-fc150600efc8-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548747/shawnys/clarence-daraelle/7529ba5d-5b1d-491d-b9c7-d9c2a798f733-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548748/shawnys/clarence-daraelle/66c01c00-117a-43d1-9725-b6961d5d1640-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548748/shawnys/clarence-daraelle/eb2071b1-427c-476a-b6d3-5e406599945b-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548749/shawnys/clarence-daraelle/487af74a-13e3-48a2-b432-b15b087d69fe-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548749/shawnys/clarence-daraelle/de75c8b1-0282-4a6f-9432-23a96934c57d-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548749/shawnys/clarence-daraelle/562af55f-4abd-486d-b241-2db48780df36-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548750/shawnys/clarence-daraelle/0000e373-1439-4016-a1e2-5872bb79f636-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548751/shawnys/clarence-daraelle/cecf81c8-522a-4a09-9f49-a7565eb06b12-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548750/shawnys/clarence-daraelle/732f7198-2b48-40e2-84fb-d14603ee050f-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548752/shawnys/clarence-daraelle/98b11dac-c71b-4943-9603-e511d35b3d9c-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548752/shawnys/clarence-daraelle/aaee4015-11cd-4691-b356-d335ba672059-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548752/shawnys/clarence-daraelle/4ba618f4-c4fa-4b19-a751-1b3d24c6d80b-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548753/shawnys/clarence-daraelle/4b5c5457-83fe-4c61-8b29-334467e5b1fe-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548753/shawnys/clarence-daraelle/c96db32a-92ba-4f79-ac51-33f9acbd42e3-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548754/shawnys/clarence-daraelle/c911a538-5dcb-4a35-83d6-e42abd187ed0-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548754/shawnys/clarence-daraelle/0c3d4707-215e-4e1d-8cd6-9baa21d6310c-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548755/shawnys/clarence-daraelle/fd952dbd-81dd-4943-95b0-c5e059cafb62-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548755/shawnys/clarence-daraelle/bca7c84b-67b3-42df-9ee4-0eca880470f2-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548755/shawnys/clarence-daraelle/5238f1ea-7699-4d19-852a-420ab6bcb1b6-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548756/shawnys/clarence-daraelle/9eed17a8-29b6-4b8d-861e-e09a03b7debc-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548756/shawnys/clarence-daraelle/7d57dacc-188b-4abf-b647-edd8b0b46ca5-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548757/shawnys/clarence-daraelle/e50a8a74-9ef7-449f-be19-989b7a697d49-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548757/shawnys/clarence-daraelle/065c2e5e-9c06-43d8-9da9-a1027bcf3199-rw-1920.jpg"
       ],
       "chapters": [
         {
@@ -300,9 +320,9 @@
       ],
       "oldUrl": "/clarence-daraelle",
       "trio": [
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/f60697ac-0344-4492-a4cb-7a4292bb0caa_rwc_540x0x2762x2160x2762.jpg?h=12d8f314dc32b92a2fc89ab42c6f8d18",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/15d33a42-b4a7-48c7-9806-9d0624356804_rw_1920.jpg?h=a6244be147ad69abcaf866d1ac744dbc",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/6c44c57f-dfae-497b-bc02-7542bea3deee_rw_1920.jpg?h=b149ba2c41468861eebb99158371d605"
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548744/shawnys/clarence-daraelle/f60697ac-0344-4492-a4cb-7a4292bb0caa-rwc-540x0x2762x2160x2762.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548744/shawnys/clarence-daraelle/15d33a42-b4a7-48c7-9806-9d0624356804-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548744/shawnys/clarence-daraelle/6c44c57f-dfae-497b-bc02-7542bea3deee-rw-1920.jpg"
       ]
     },
     {
@@ -310,7 +330,7 @@
       "title": "Daniel & Dawn",
       "category": "weddings",
       "type": "Pre-wedding",
-      "hero": "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/5806fc30-8c49-4659-9cb7-cbd3e4acf714_rw_1920.jpg?h=079c9277e8be34b14136b72853109deb",
+      "hero": "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548758/shawnys/daniel-and-dawn/5806fc30-8c49-4659-9cb7-cbd3e4acf714-rw-1920.jpg",
       "focus": "50% 40%",
       "venue": "Gardens by the Bay, Botanic Gardens and home",
       "venues": [
@@ -323,18 +343,18 @@
       "selected": true,
       "story": null,
       "accentFallback": "#5A6B3F",
-      "cover": "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/5719067a-34bd-403a-b478-cdb7d06aaadc_rwc_870x0x2105x1646x2105.jpg?h=452ae64912e5123f8adfd622a335b6f4",
+      "cover": "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548758/shawnys/daniel-and-dawn/5719067a-34bd-403a-b478-cdb7d06aaadc-rwc-870x0x2105x1646x2105.jpg",
       "featured": [
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/5806fc30-8c49-4659-9cb7-cbd3e4acf714_rw_1920.jpg?h=079c9277e8be34b14136b72853109deb",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/8b62b44b-d587-4d01-a38f-383705146c5b_rw_1920.jpg?h=3a13e48b55fc1f7c0e00b5ff4cc40d10"
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548758/shawnys/daniel-and-dawn/5806fc30-8c49-4659-9cb7-cbd3e4acf714-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548758/shawnys/daniel-and-dawn/8b62b44b-d587-4d01-a38f-383705146c5b-rw-1920.jpg"
       ],
       "photos": [],
       "chapters": [],
       "oldUrl": "/daniel-and-dawn",
       "trio": [
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/5719067a-34bd-403a-b478-cdb7d06aaadc_rwc_870x0x2105x1646x2105.jpg?h=452ae64912e5123f8adfd622a335b6f4",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/5806fc30-8c49-4659-9cb7-cbd3e4acf714_rw_1920.jpg?h=079c9277e8be34b14136b72853109deb",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/8b62b44b-d587-4d01-a38f-383705146c5b_rw_1920.jpg?h=3a13e48b55fc1f7c0e00b5ff4cc40d10"
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548758/shawnys/daniel-and-dawn/5719067a-34bd-403a-b478-cdb7d06aaadc-rwc-870x0x2105x1646x2105.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548758/shawnys/daniel-and-dawn/5806fc30-8c49-4659-9cb7-cbd3e4acf714-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548758/shawnys/daniel-and-dawn/8b62b44b-d587-4d01-a38f-383705146c5b-rw-1920.jpg"
       ]
     },
     {
@@ -342,7 +362,7 @@
       "title": "Brinston & Chrestella",
       "category": "weddings",
       "type": "Wedding",
-      "hero": "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/554f97af-e90c-48d8-860c-521407919cc5_rw_1920.jpg?h=0152256e9b04627bdd9c80802a1a75c5",
+      "hero": "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548760/shawnys/brinston-chrestella/554f97af-e90c-48d8-860c-521407919cc5-rw-1920.jpg",
       "focus": "50% 40%",
       "venue": "Church of St Ignatius and Swissôtel The Stamford",
       "venues": [
@@ -354,18 +374,18 @@
       "selected": true,
       "story": null,
       "accentFallback": "#6E4B3A",
-      "cover": "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/44398f6f-5180-47a6-b35c-bd320df680a6_rwc_540x0x2762x2160x2762.jpg?h=140b05c0c47372df7c4d545c0f683330",
+      "cover": "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548760/shawnys/brinston-chrestella/44398f6f-5180-47a6-b35c-bd320df680a6-rwc-540x0x2762x2160x2762.jpg",
       "featured": [
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/554f97af-e90c-48d8-860c-521407919cc5_rw_1920.jpg?h=0152256e9b04627bdd9c80802a1a75c5",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/46164643-92b7-473d-8c3d-2817a472bb3e_rw_1920.jpg?h=0a8cdddc6d0b7116dfc9eb0bb302d013"
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548760/shawnys/brinston-chrestella/554f97af-e90c-48d8-860c-521407919cc5-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548760/shawnys/brinston-chrestella/46164643-92b7-473d-8c3d-2817a472bb3e-rw-1920.jpg"
       ],
       "photos": [],
       "chapters": [],
       "oldUrl": "/brinston-chrestella-wedding",
       "trio": [
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/44398f6f-5180-47a6-b35c-bd320df680a6_rwc_540x0x2762x2160x2762.jpg?h=140b05c0c47372df7c4d545c0f683330",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/554f97af-e90c-48d8-860c-521407919cc5_rw_1920.jpg?h=0152256e9b04627bdd9c80802a1a75c5",
-        "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/46164643-92b7-473d-8c3d-2817a472bb3e_rw_1920.jpg?h=0a8cdddc6d0b7116dfc9eb0bb302d013"
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548760/shawnys/brinston-chrestella/44398f6f-5180-47a6-b35c-bd320df680a6-rwc-540x0x2762x2160x2762.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548760/shawnys/brinston-chrestella/554f97af-e90c-48d8-860c-521407919cc5-rw-1920.jpg",
+        "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548760/shawnys/brinston-chrestella/46164643-92b7-473d-8c3d-2817a472bb3e-rw-1920.jpg"
       ]
     },
     {
@@ -384,7 +404,7 @@
       "selected": false,
       "story": null,
       "accentFallback": null,
-      "cover": "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/6b8c5895-3dc4-4934-a54a-2f62b1a20695_rwc_0x1378x3840x3002x3840.jpg?h=9f47bdd80bba9a2d0b8328d699634a18",
+      "cover": "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548761/shawnys/john-xin-yi/6b8c5895-3dc4-4934-a54a-2f62b1a20695-rwc-0x1378x3840x3002x3840.jpg",
       "featured": [],
       "photos": [],
       "chapters": [],
@@ -406,7 +426,7 @@
       "selected": false,
       "story": null,
       "accentFallback": null,
-      "cover": "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/89beaf21-740b-414b-b5be-9e8ac7ef7c20_rwc_0x890x3840x3002x3840.jpg?h=acbd0bb6c13b6914ffa70449d0c05897",
+      "cover": "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548764/shawnys/ming-charmaine/89beaf21-740b-414b-b5be-9e8ac7ef7c20-rwc-0x890x3840x3002x3840.jpg",
       "featured": [],
       "photos": [],
       "chapters": [],
@@ -428,7 +448,7 @@
       "selected": false,
       "story": null,
       "accentFallback": null,
-      "cover": "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/f5b9da67-23c8-495d-b45a-c1e4a53db9fb_rwc_297x0x3274x2560x3274.jpg?h=ed25d05efa3f74c864d92f062209fdd2",
+      "cover": "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548766/shawnys/reuben-tricia-wedding/f5b9da67-23c8-495d-b45a-c1e4a53db9fb-rwc-297x0x3274x2560x3274.jpg",
       "featured": [],
       "photos": [],
       "chapters": [],
@@ -450,7 +470,7 @@
       "selected": false,
       "story": null,
       "accentFallback": null,
-      "cover": "https://cdn.myportfolio.com/1e68e3d3-6c26-476f-a803-4dfdcb9112de/77b663a2-b8a4-4dac-8263-a146d0f64be1_rwc_390x0x3069x2400x3069.jpg?h=5876d794cc7e70af8deafd318698f58c",
+      "cover": "https://res.cloudinary.com/cwvqjkoe/image/upload/v1794548768/shawnys/reuben-tricia-prewedding/77b663a2-b8a4-4dac-8263-a146d0f64be1-rwc-390x0x3069x2400x3069.jpg",
       "featured": [],
       "photos": [],
       "chapters": [],
